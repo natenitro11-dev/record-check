@@ -576,10 +576,10 @@ function BillSearchBox({ onSelect }) {
 }
 
 const OUTLETS = [
-  { name: "New York Times", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "§ 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
-  { name: "Wall Street Journal", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "§ 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
-  { name: "NPR", lean: 33, tone: "neutral", coverage: 94, date: "Mar 20, 2025", headline: "Kids Online Safety Act — What It Actually Does", angle: "Explanatory and balanced. Best overall coverage of actual provisions.", billSection: "§ 4(b)(2) — Parental Tools", billText: "A covered platform shall provide a minor user's parent or legal guardian with tools to: (A) supervise the minor's use of platform features; (B) limit the time a minor may spend using the platform; (C) restrict the minor's ability to make in-application purchases; and (D) access a summary of the content categories to which the minor has been exposed during the preceding 30 days.", keywords: ["parent or legal guardian", "limit the time", "in-application purchases", "content categories"] },
-  { name: "Fox News", lean: 84, tone: "negative", coverage: 44, date: "Mar 22, 2025", headline: "Democrat-Led Bill Could Give Feds Power to Police Teen Internet Use", angle: "Partisan framing leads. Minimal bill substance. Censorship angle dominant.", billSection: "§ 7(a) — FTC Enforcement", billText: "The Federal Trade Commission shall enforce this Act in the same manner, by the same means, and with the same jurisdiction, powers, and duties as though all applicable terms of the Federal Trade Commission Act were incorporated into and made a part of this Act. Any covered platform that violates this Act shall be subject to civil penalties not to exceed $50,000 per violation per day.", keywords: ["Federal Trade Commission shall enforce", "civil penalties", "$50,000 per violation per day"] },
+  { name: "New York Times", url: "https://www.nytimes.com", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "§ 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
+  { name: "Wall Street Journal", url: "https://www.wsj.com", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "§ 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
+  { name: "NPR", url: "https://www.npr.org", lean: 33, tone: "neutral", coverage: 94, date: "Mar 20, 2025", headline: "Kids Online Safety Act — What It Actually Does", angle: "Explanatory and balanced. Best overall coverage of actual provisions.", billSection: "§ 4(b)(2) — Parental Tools", billText: "A covered platform shall provide a minor user's parent or legal guardian with tools to: (A) supervise the minor's use of platform features; (B) limit the time a minor may spend using the platform; (C) restrict the minor's ability to make in-application purchases; and (D) access a summary of the content categories to which the minor has been exposed during the preceding 30 days.", keywords: ["parent or legal guardian", "limit the time", "in-application purchases", "content categories"] },
+  { name: "Fox News", url: "https://www.foxnews.com", lean: 84, tone: "negative", coverage: 44, date: "Mar 22, 2025", headline: "Democrat-Led Bill Could Give Feds Power to Police Teen Internet Use", angle: "Partisan framing leads. Minimal bill substance. Censorship angle dominant.", billSection: "§ 7(a) — FTC Enforcement", billText: "The Federal Trade Commission shall enforce this Act in the same manner, by the same means, and with the same jurisdiction, powers, and duties as though all applicable terms of the Federal Trade Commission Act were incorporated into and made a part of this Act. Any covered platform that violates this Act shall be subject to civil penalties not to exceed $50,000 per violation per day.", keywords: ["Federal Trade Commission shall enforce", "civil penalties", "$50,000 per violation per day"] },
 ];
 const TIMELINE = [
   { month: "Aug '23", event: "Bill Introduced", coverage: 12, tone: "neutral" },
@@ -621,15 +621,25 @@ const NAV = [
 ];
 
 const TONE_CFG = {
-  supportive: { label: "Supportive", accent: C.gold },
-  neutral:    { label: "Neutral",    accent: "#aabba8" },
-  skeptical:  { label: "Skeptical",  accent: "#c27040" },
-  negative:   { label: "Critical",   accent: C.red },
+  supportive: { label: "Supportive", accent: "#22c55e" },
+  neutral:    { label: "Neutral",    accent: "#94a3b8" },
+  skeptical:  { label: "Skeptical",  accent: "#a855f7" },
+  negative:   { label: "Critical",   accent: "#ef4444" },
 };
 const leanColor = s => partisanColor(s);
 const leanLabel = s => partisanLabel(s);
 const demoColor = v => v >= 68 ? C.gold : v >= 58 ? C.blue : C.red;
-const toneColor = t => ({ supportive: C.gold, neutral: "#aabba8", skeptical: "#c27040", negative: C.red })[t] || C.cream;
+const toneColor = t => TONE_CFG[t]?.accent || C.cream;
+
+// ── Drop shadow presets ────────────────────────────────────────
+const SHADOW = {
+  card:  "0 8px 48px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.5)",
+  tone:  t   => { const col = TONE_CFG[t]?.accent || "#94a3b8"; return `0 0 0 1px ${col}33, 0 4px 16px ${col}55, 0 8px 24px ${col}22, 0 2px 6px rgba(0,0,0,0.9)`; },
+  bias:  col => `0 0 0 1px ${col}33, 0 4px 16px ${col}55, 0 8px 24px ${col}22, 0 2px 6px rgba(0,0,0,0.9)`,
+  pill:  col => `0 0 0 1px ${col}44, 0 4px 16px ${col}77, 0 8px 24px ${col}33`,
+  glow:  col => `0 6px 32px ${col}55, 0 2px 12px ${col}33`,
+  stat:  col => `0 12px 56px ${col}66, 0 4px 24px ${col}44`,
+};
 
 // ── Primitives ─────────────────────────────────────────────────
 function Bar({ pct, color, h }) {
@@ -994,7 +1004,7 @@ function MediaAnalysis({ bill, archivalData, sourceLoading, sourceError, activeS
         {displayOutlets.slice(0, 8).map((out, i) => {
           const tc = TONE_CFG[out.tone] || TONE_CFG.neutral; const isA = active === i;
           return (
-            <div key={i} onClick={() => setActive(i)} style={{ cursor: "pointer", background: isA ? C.panelHi : C.panel, border: "1px solid " + (isA ? tc.accent + "55" : C.border), borderTop: "4px solid " + (isA ? tc.accent : C.border), padding: "0.8rem", transition: "all 0.18s" }}>
+            <div key={i} onClick={() => setActive(i)} style={{ cursor: "pointer", background: isA ? C.panelHi : C.panel, border: "1px solid " + (isA ? tc.accent + "55" : C.border), borderTop: "4px solid " + (isA ? tc.accent : C.border), padding: "0.8rem", transition: "all 0.18s", boxShadow: isA ? SHADOW.tone(out.tone) : "none" }}>
               <MN color={isA ? C.muted : C.dim} size="0.46rem">{out.name} {out.date ? "· " + out.date : ""}</MN>
               <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.85rem", color: isA ? "#fff" : C.dim, lineHeight: 1.2, margin: "0.32rem 0 0.45rem" }}>{out.headline || out.name}</div>
               <div style={{ display: "inline-block", fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", letterSpacing: "0.12em", color: tc.accent, border: "1px solid " + tc.accent + "44", padding: "0.08rem 0.38rem", marginBottom: "0.42rem" }}>{tc.label}</div>
@@ -1007,7 +1017,7 @@ function MediaAnalysis({ bill, archivalData, sourceLoading, sourceError, activeS
       </div>
 
       {/* Detail panel */}
-      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1rem 1.3rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.4rem" }}>
+      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1rem 1.3rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.4rem", boxShadow: SHADOW.tone(o.tone) }}>
         <div>
           <SL accent={t.accent}>Actual Bill Language</SL>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", color: t.accent, letterSpacing: "0.1em", marginBottom: "0.45rem" }}>{o.billSection}</div>
@@ -1049,9 +1059,9 @@ function BillLanguage({ bill }) {
         <MN color={C.dim} size="0.4rem">{B.id} · Select outlet below to compare coverage vs bill text</MN>
       </div>
       <div style={{ display: "flex", gap: "0.38rem", flexWrap: "wrap" }}>
-        {OUTLETS.map((out, i) => <button key={i} onClick={() => setSel(i)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", letterSpacing: "0.1em", padding: "0.32rem 0.8rem", background: sel === i ? TONE_CFG[out.tone].accent : C.panel, color: sel === i ? C.bg : C.dim, border: "1px solid " + (sel === i ? TONE_CFG[out.tone].accent : C.border), cursor: "pointer", transition: "all 0.15s" }}>{out.name}</button>)}
+        {OUTLETS.map((out, i) => <button key={i} onClick={() => setSel(i)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", letterSpacing: "0.1em", padding: "0.32rem 0.8rem", background: sel === i ? TONE_CFG[out.tone].accent : C.panel, color: sel === i ? C.bg : C.dim, border: "1px solid " + (sel === i ? TONE_CFG[out.tone].accent : C.border), cursor: "pointer", transition: "all 0.15s", boxShadow: sel === i ? SHADOW.tone(out.tone) : "none" }}>{out.name}</button>)}
       </div>
-      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1.1rem 1.3rem" }}>
+      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1.1rem 1.3rem", boxShadow: SHADOW.tone(o.tone) }}>
         <div style={{ display: "grid", gridTemplateColumns: "170px 1fr", gap: "1.1rem", alignItems: "start", marginBottom: "1rem" }}>
           <div><BN color={t.accent} size="1.6rem">{parts[0] ? parts[0].trim() : o.billSection}</BN>{parts[1] && <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", color: C.cream, marginTop: 3 }}>{parts[1].trim()}</div>}</div>
           <div style={{ display: "flex", gap: "0.45rem", flexWrap: "wrap", alignItems: "center" }}>
@@ -1349,7 +1359,7 @@ function ReaderPulse({ bill }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.7rem" }}>
 
             {/* Card 1 — Overall */}
-            <Card>
+            <Card style={{boxShadow:SHADOW.glow(C.gold)}}>
               <SL accent={C.gold}>National Support</SL>
               <BN color={C.gold} size="5rem"><AnimNum target={d.overall} /></BN>
               <MN color={C.gold} size="0.48rem">{d.trend} · {d.undecided}% undecided</MN>
@@ -1544,7 +1554,7 @@ function BuriedLede({ bill }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.7rem" }}>
 
         {/* What they led with */}
-        <div style={{ background: C.panel, borderTop: "4px solid " + C.blue, padding: "1.1rem" }}>
+        <div style={{ background: C.panel, borderTop: "4px solid " + C.blue, padding: "1.1rem", boxShadow: SHADOW.bias(C.blue) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: C.blue, marginBottom: "0.75rem" }}>
             WHAT THEY LED WITH
           </div>
@@ -1554,7 +1564,7 @@ function BuriedLede({ bill }) {
         </div>
 
         {/* The real news */}
-        <div style={{ background: C.panel, borderTop: "4px solid " + C.red, padding: "1.1rem" }}>
+        <div style={{ background: C.panel, borderTop: "4px solid " + C.red, padding: "1.1rem", boxShadow: SHADOW.bias(C.red) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: C.red, marginBottom: "0.75rem" }}>
             THE REAL NEWS
           </div>
@@ -1566,7 +1576,7 @@ function BuriedLede({ bill }) {
 
       {/* AI verdict strip */}
       {aiResult && (
-        <div style={{ background: C.panel, border: "1px solid " + gradeColor + "44", borderLeft: "4px solid " + gradeColor, padding: "0.9rem 1.1rem", display: "grid", gridTemplateColumns: "52px 1fr", gap: "1rem", alignItems: "center" }}>
+        <div style={{ background: C.panel, border: "1px solid " + gradeColor + "44", borderLeft: "4px solid " + gradeColor, padding: "0.9rem 1.1rem", display: "grid", gridTemplateColumns: "52px 1fr", gap: "1rem", alignItems: "center", boxShadow: SHADOW.glow(gradeColor) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "2.4rem", color: gradeColor, lineHeight: 1, textAlign: "center", border: "2px solid " + gradeColor, width: 52, height: 52, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 12px " + gradeColor + "44" }}>
             {aiResult.grade}
           </div>
@@ -1809,7 +1819,7 @@ function OfficialsDB() {
 
         {/* Detail pane */}
         {selected && (
-          <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid #0E7490", padding: "1.1rem 1.3rem" }}>
+          <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid #0E7490", padding: "1.1rem 1.3rem", boxShadow: SHADOW.bias("#0E7490") }}>
 
             {/* Header */}
             <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap" }}>
