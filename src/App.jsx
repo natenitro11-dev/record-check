@@ -618,6 +618,7 @@ const NAV = [
   { id: "pulse",     num: "06", label: "Reader Pulse",      sub: "Polling Data",           color: "#2E8B57" },
   { id: "lede",      num: "07", label: "Buried Lede",       sub: "What They Hid",          color: "#CC5500" },
   { id: "officials", num: "08", label: "Officials DB",      sub: "Stances & Records",      color: "#0E7490" },
+  { id: "cards",     num: "09", label: "Cards",            sub: "Media Card Generator",   color: "#7C3AED" },
 ];
 
 const TONE_CFG = {
@@ -631,7 +632,6 @@ const leanLabel = s => partisanLabel(s);
 const demoColor = v => v >= 68 ? C.gold : v >= 58 ? C.blue : C.red;
 const toneColor = t => TONE_CFG[t]?.accent || C.cream;
 
-// ── Drop shadow presets ────────────────────────────────────────
 const SHADOW = {
   card:  "0 8px 48px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.5)",
   tone:  t   => { const col = TONE_CFG[t]?.accent || "#94a3b8"; return `0 0 0 1px ${col}33, 0 4px 16px ${col}55, 0 8px 24px ${col}22, 0 2px 6px rgba(0,0,0,0.9)`; },
@@ -851,6 +851,82 @@ function ScrollBannerTab({ tab, isActive, onClick }) {
 }
 
 // ── TAB CONTENTS (same as before, compact) ────────────────────
+
+// ── Outlet toggle pill ──────────────────────────────────────────
+function OutletPill({ outlet, active, onClick }) {
+  const accent = (TONE_CFG[outlet.tone]?.accent) || "#94a3b8";
+  const biasColor = partisanColor(outlet.lean);
+  return (
+    <button onClick={onClick} style={{
+      padding: "0.35rem 0.85rem",
+      background: active ? accent : C.panel,
+      color: active ? C.bg : C.dim,
+      border: `1px solid ${active ? accent : C.border}`,
+      borderRadius: 8,
+      fontFamily: "'Bebas Neue', Impact, sans-serif",
+      fontSize: "0.88rem", letterSpacing: "0.1em",
+      cursor: "pointer", transition: "all 0.2s",
+      boxShadow: active ? SHADOW.pill(biasColor) : "none",
+    }}>
+      {outlet.name}
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", opacity: 0.7, marginLeft: 4 }}>{outlet.coverage}%</span>
+    </button>
+  );
+}
+
+// ── Outlet expanded card ─────────────────────────────────────────
+function OutletExpandedCard({ outlet, showText }) {
+  const accent = TONE_CFG[outlet.tone]?.accent || "#94a3b8";
+  const biasColor = partisanColor(outlet.lean);
+  return (
+    <div style={{
+      background: C.panel, border: `1px solid ${C.border}`,
+      borderLeft: `4px solid ${accent}`, borderRadius: 10,
+      padding: "1.1rem 1.2rem",
+      boxShadow: `0 0 0 1px ${biasColor}33, 0 4px 16px ${biasColor}55, 0 8px 24px ${biasColor}22, 0 2px 6px rgba(0,0,0,0.9)`,
+      animation: "slideDown 0.2s ease",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+        <div>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, letterSpacing: "0.04em" }}>{outlet.name}</div>
+          <div style={{ display: "flex", gap: "0.4rem", alignItems: "center", marginTop: 3 }}>
+            <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.6rem", color: accent, border: `1px solid ${accent}44`, padding: "0.08rem 0.4rem", borderRadius: 4, letterSpacing: "0.1em" }}>{TONE_CFG[outlet.tone]?.label || outlet.tone}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.muted }}>{outlet.coverage}% coverage</span>
+          </div>
+        </div>
+        <div style={{ width: 80 }}>
+          <div style={{ position: "relative", height: 5, background: `linear-gradient(90deg,${DEM},${IND},${REP})`, borderRadius: 3 }}>
+            <div style={{ position: "absolute", top: "50%", left: outlet.lean + "%", transform: "translate(-50%,-50%)", width: 11, height: 11, borderRadius: "50%", background: partisanColor(outlet.lean), border: `2px solid ${C.bg}` }} />
+          </div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.34rem", color: partisanColor(outlet.lean), textAlign: "center", marginTop: 3 }}>{partisanLabel(outlet.lean)}</div>
+        </div>
+      </div>
+      {outlet.url
+        ? <a href={outlet.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, lineHeight: 1.2, marginBottom: "0.5rem", letterSpacing: "0.02em" }}>
+              {outlet.headline} <span style={{ fontSize: "0.5rem", opacity: 0.5 }}>↗</span>
+            </div>
+          </a>
+        : <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, lineHeight: 1.2, marginBottom: "0.5rem", letterSpacing: "0.02em" }}>{outlet.headline}</div>
+      }
+      <div style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.82rem", color: C.muted, lineHeight: 1.6, marginBottom: showText ? "1rem" : 0 }}>{outlet.angle}</div>
+      {showText && (
+        <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "0.85rem", marginTop: "0.25rem" }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.7rem", color: accent, letterSpacing: "0.1em", marginBottom: "0.5rem" }}>{outlet.billSection}</div>
+          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, padding: "0.85rem 1rem", fontFamily: "Georgia, serif", fontSize: "0.88rem", color: "#7a9ab8", lineHeight: 1.9 }}>
+            <HLText text={outlet.billText} keywords={outlet.keywords} accent={accent} />
+          </div>
+          {outlet.keywords?.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "0.6rem" }}>
+              {outlet.keywords.map((k, i) => <span key={i} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: accent, background: accent + "14", border: `1px solid ${accent}2a`, padding: "0.18rem 0.45rem", borderRadius: 4 }}>{k}</span>)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BillBrief({ bill, loading }) {
   const B = bill || DEFAULT_BILL;
   const hasLiveData = bill && bill !== DEFAULT_BILL;
@@ -960,87 +1036,31 @@ function SourceSelector({ active, onSelect, loading, error }) {
 }
 
 function MediaAnalysis({ bill, archivalData, sourceLoading, sourceError, activeSource, onSourceSelect }) {
-  const [active, setActive] = useState(0);
-
-  // Use live archival outlets if available, fall back to demo OUTLETS
-  const liveOutlets = archivalData?.mediaAnalysis?.outlets;
-  const displayOutlets = liveOutlets?.length ? liveOutlets.map(o => ({
-    name: o.name, lean: o.lean || 50, tone: o.tone || "neutral",
-    coverage: o.coverage || 50, date: o.date || "",
-    headline: o.headline || "", angle: o.angle || "",
-    billSection: "§ — Live Data", billText: o.angle || "Article text unavailable — click URL to read full article.",
-    keywords: [], url: o.url || "",
-  })) : OUTLETS;
-
-  const o = displayOutlets[Math.min(active, displayOutlets.length - 1)];
-  const t = TONE_CFG[o.tone] || TONE_CFG.neutral;
-
+  const [selected, setSelected] = useState(new Set());
+  const toggle = i => setSelected(prev => {
+    const next = new Set(prev);
+    next.has(i) ? next.delete(i) : next.add(i);
+    return next;
+  });
+  const displayOutlets = archivalData?.mediaAnalysis?.outlets?.length
+    ? archivalData.mediaAnalysis.outlets.map(o => ({ ...o, url: "", billSection: "Live Data", billText: o.angle || "", keywords: [] }))
+    : OUTLETS;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
-
-      {/* Source selector */}
-      <SourceSelector active={activeSource} onSelect={onSourceSelect} loading={sourceLoading} error={sourceError} />
-
-      {/* Coverage summary from live data */}
-      {archivalData?.mediaAnalysis?.coverageSummary && (
-        <div style={{ background: C.bg, border: "1px solid " + C.border, borderLeft: "4px solid #4A8FA8", padding: "0.65rem 0.9rem" }}>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "baseline", marginBottom: "0.25rem" }}>
-            <MN color={"#4A8FA8"} size="0.44rem" spacing="0.12em">LIVE COVERAGE SUMMARY</MN>
-            <MN color={C.dim} size="0.4rem">{archivalData.mediaAnalysis.totalArticleCount} articles indexed</MN>
-          </div>
-          <div style={{ fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.84rem", color: C.muted, lineHeight: 1.65 }}>
-            {archivalData.mediaAnalysis.coverageSummary}
-          </div>
-          {archivalData.mediaAnalysis.dominantFraming && (
-            <div style={{ marginTop: "0.35rem", fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.75rem", color: C.cream, letterSpacing: "0.06em" }}>
-              {archivalData.mediaAnalysis.dominantFraming}
-            </div>
-          )}
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      <div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: C.dim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: "0.6rem" }}>Select outlets to compare</div>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {displayOutlets.map((o, i) => <OutletPill key={i} outlet={o} active={selected.has(i)} onClick={() => toggle(i)} />)}
+        </div>
+      </div>
+      {selected.size === 0 && (
+        <div style={{ textAlign: "center", padding: "2.5rem 1rem", border: `1px dashed ${C.border}`, borderRadius: 10 }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.1rem", color: C.dim, letterSpacing: "0.08em" }}>Tap any outlet above</div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", color: C.muted, marginTop: "0.4rem" }}>Cards stack as you select them</div>
         </div>
       )}
-
-      {/* Outlet cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.5rem" }}>
-        {displayOutlets.slice(0, 8).map((out, i) => {
-          const tc = TONE_CFG[out.tone] || TONE_CFG.neutral; const isA = active === i;
-          return (
-            <div key={i} onClick={() => setActive(i)} style={{ cursor: "pointer", background: isA ? C.panelHi : C.panel, border: "1px solid " + (isA ? tc.accent + "55" : C.border), borderTop: "4px solid " + (isA ? tc.accent : C.border), padding: "0.8rem", transition: "all 0.18s", boxShadow: isA ? SHADOW.tone(out.tone) : "none" }}>
-              <MN color={isA ? C.muted : C.dim} size="0.46rem">{out.name} {out.date ? "· " + out.date : ""}</MN>
-              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.85rem", color: isA ? "#fff" : C.dim, lineHeight: 1.2, margin: "0.32rem 0 0.45rem" }}>{out.headline || out.name}</div>
-              <div style={{ display: "inline-block", fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", letterSpacing: "0.12em", color: tc.accent, border: "1px solid " + tc.accent + "44", padding: "0.08rem 0.38rem", marginBottom: "0.42rem" }}>{tc.label}</div>
-              <Bar pct={out.coverage} color={tc.accent} h={4} />
-              <MN color={C.dim} size="0.38rem">{out.coverage}% coverage</MN>
-              {out.url && isA && <div style={{ marginTop: "0.3rem" }}><a href={out.url} target="_blank" rel="noreferrer" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.36rem", color: "#4A8FA8", letterSpacing: "0.04em" }}>→ Read article</a></div>}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Detail panel */}
-      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1rem 1.3rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.4rem", boxShadow: SHADOW.tone(o.tone) }}>
-        <div>
-          <SL accent={t.accent}>Actual Bill Language</SL>
-          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", color: t.accent, letterSpacing: "0.1em", marginBottom: "0.45rem" }}>{o.billSection}</div>
-          <div style={{ background: C.bg, border: "1px solid " + C.navy, borderLeft: "3px solid " + t.accent + "55", padding: "0.8rem 0.95rem", marginBottom: "0.45rem", fontFamily: "'Georgia', serif", fontSize: "0.84rem", color: "#7a9ab8", lineHeight: 1.85 }}>
-            <HLText text={o.billText} keywords={o.keywords || []} accent={t.accent} />
-          </div>
-          {(o.keywords || []).length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.28rem" }}>
-              {o.keywords.map((k, i) => <span key={i} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: t.accent, background: t.accent + "12", border: "1px solid " + t.accent + "44", padding: "0.1rem 0.32rem" }}>{k}</span>)}
-            </div>
-          )}
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
-          <div><SL accent={t.accent}>Editorial Angle</SL><div style={{ fontFamily: "'Georgia', serif", fontSize: "0.84rem", color: C.muted, lineHeight: 1.7 }}>{o.angle || "Select an outlet above to see their angle."}</div></div>
-          <div>
-            <SL accent={t.accent}>Political Lean</SL>
-            <div style={{ position: "relative", height: 7, background: "linear-gradient(90deg," + DEM + "," + IND + "," + REP + ")", borderRadius: 4, marginBottom: 7 }}>
-              <div style={{ position: "absolute", top: "50%", left: o.lean + "%", transform: "translate(-50%,-50%)", width: 15, height: 15, borderRadius: "50%", background: leanColor(o.lean), border: "2.5px solid " + C.bg, boxShadow: "0 0 10px " + leanColor(o.lean) + "88" }} />
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><MN color={DEM} size="0.42rem">DEM</MN><BN color={leanColor(o.lean)} size="0.95rem">{leanLabel(o.lean)}</BN><MN color={REP} size="0.42rem">REP</MN></div>
-          </div>
-          <div><SL accent={t.accent}>Coverage Score</SL><BN color={t.accent} size="2.8rem">{o.coverage}<span style={{ fontSize: "1.1rem" }}>%</span></BN><Bar pct={o.coverage} color={t.accent} h={6} /></div>
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        {displayOutlets.map((o, i) => selected.has(i) && <OutletExpandedCard key={i} outlet={o} showText={false} />)}
       </div>
     </div>
   );
@@ -1048,34 +1068,32 @@ function MediaAnalysis({ bill, archivalData, sourceLoading, sourceError, activeS
 
 function BillLanguage({ bill }) {
   const B = bill || DEFAULT_BILL;
-  const [sel, setSel] = useState(0);
-  const o = OUTLETS[sel]; const t = TONE_CFG[o.tone];
-  const parts = o.billSection.split("—");
+  const [selected, setSelected] = useState(new Set());
+  const toggle = i => setSelected(prev => {
+    const next = new Set(prev);
+    next.has(i) ? next.delete(i) : next.add(i);
+    return next;
+  });
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
-      {/* Bill identity */}
-      <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + C.gold, padding: "0.5rem 0.85rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      <div style={{ background: C.panel, border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.gold}`, padding: "0.5rem 0.85rem", borderRadius: 8 }}>
         <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: C.cream, letterSpacing: "0.06em" }}>{B.name}</div>
-        <MN color={C.dim} size="0.4rem">{B.id} · Select outlet below to compare coverage vs bill text</MN>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: C.muted }}>{B.id} · Select outlets to compare their coverage vs bill text</div>
       </div>
-      <div style={{ display: "flex", gap: "0.38rem", flexWrap: "wrap" }}>
-        {OUTLETS.map((out, i) => <button key={i} onClick={() => setSel(i)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", letterSpacing: "0.1em", padding: "0.32rem 0.8rem", background: sel === i ? TONE_CFG[out.tone].accent : C.panel, color: sel === i ? C.bg : C.dim, border: "1px solid " + (sel === i ? TONE_CFG[out.tone].accent : C.border), cursor: "pointer", transition: "all 0.15s", boxShadow: sel === i ? SHADOW.tone(out.tone) : "none" }}>{out.name}</button>)}
+      <div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: C.dim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: "0.6rem" }}>Toggle outlets to compare bill language</div>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {OUTLETS.map((o, i) => <OutletPill key={i} outlet={o} active={selected.has(i)} onClick={() => toggle(i)} />)}
+        </div>
       </div>
-      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1.1rem 1.3rem", boxShadow: SHADOW.tone(o.tone) }}>
-        <div style={{ display: "grid", gridTemplateColumns: "170px 1fr", gap: "1.1rem", alignItems: "start", marginBottom: "1rem" }}>
-          <div><BN color={t.accent} size="1.6rem">{parts[0] ? parts[0].trim() : o.billSection}</BN>{parts[1] && <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", color: C.cream, marginTop: 3 }}>{parts[1].trim()}</div>}</div>
-          <div style={{ display: "flex", gap: "0.45rem", flexWrap: "wrap", alignItems: "center" }}>
-            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", letterSpacing: "0.12em", color: t.accent, border: "1px solid " + t.accent + "44", padding: "0.1rem 0.5rem" }}>{TONE_CFG[o.tone].label} Coverage</div>
-            <MN color={C.dim} size="0.4rem">{o.name} · S. 4638, 118th Congress</MN>
-          </div>
+      {selected.size === 0 && (
+        <div style={{ textAlign: "center", padding: "2.5rem 1rem", border: `1px dashed ${C.border}`, borderRadius: 10 }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.1rem", color: C.dim, letterSpacing: "0.08em" }}>Select an outlet above</div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", color: C.muted, marginTop: "0.4rem" }}>The section of bill text their coverage focused on appears here</div>
         </div>
-        <div style={{ background: C.bg, border: "1px solid " + C.navy, borderLeft: "4px solid " + t.accent, padding: "1.1rem 1.35rem", fontFamily: "'Georgia', serif", fontSize: "0.95rem", color: "#7a9ab8", lineHeight: 2.05, marginBottom: "1rem" }}>
-          <HLText text={o.billText} keywords={o.keywords} accent={t.accent} />
-        </div>
-        <SL accent={t.accent}>Why These Words Matter</SL>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(190px,1fr))", gap: "0.5rem" }}>
-          {o.keywords.map((k, i) => <div key={i} style={{ background: t.accent + "0a", border: "1px solid " + t.accent + "22", borderLeft: "3px solid " + t.accent, padding: "0.55rem 0.75rem" }}><div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", color: t.accent, fontWeight: 600 }}>{k}</div></div>)}
-        </div>
+      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        {OUTLETS.map((o, i) => selected.has(i) && <OutletExpandedCard key={i} outlet={o} showText={true} />)}
       </div>
     </div>
   );
@@ -1940,6 +1958,99 @@ function OfficialsDB() {
 }
 
 // ── ROOT ──────────────────────────────────────────────────────
+
+// ── Card Generator ──────────────────────────────────────────────
+function CardGenerator() {
+  const [outlet, setOutlet] = useState(0);
+  const [cardType, setCardType] = useState("gap");
+  const o = OUTLETS[outlet];
+  const accent = TONE_CFG[o.tone]?.accent || "#94a3b8";
+  const CARD_TYPES = [
+    { id: "gap",  label: "The Gap" },
+    { id: "lede", label: "Buried Lede" },
+    { id: "stat", label: "Key Stat" },
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+        <div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: C.dim, letterSpacing: "0.12em", marginBottom: "0.4rem" }}>CARD TYPE</div>
+          <div style={{ display: "flex", gap: "0.35rem" }}>
+            {CARD_TYPES.map(ct => (
+              <button key={ct.id} onClick={() => setCardType(ct.id)} style={{ padding: "0.3rem 0.65rem", borderRadius: 7, background: cardType === ct.id ? "#7C3AED" : C.panel, color: cardType === ct.id ? "#fff" : C.dim, border: `1px solid ${cardType === ct.id ? "#7C3AED" : C.border}`, fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.15s", boxShadow: cardType === ct.id ? SHADOW.pill("#7C3AED") : "none" }}>{ct.label}</button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: C.dim, letterSpacing: "0.12em", marginBottom: "0.4rem" }}>OUTLET</div>
+          <div style={{ display: "flex", gap: "0.35rem" }}>
+            {OUTLETS.map((out, i) => (
+              <button key={i} onClick={() => setOutlet(i)} style={{ padding: "0.3rem 0.55rem", borderRadius: 7, background: outlet === i ? (TONE_CFG[out.tone]?.accent || C.dim) : C.panel, color: outlet === i ? C.bg : C.dim, border: `1px solid ${outlet === i ? (TONE_CFG[out.tone]?.accent || C.dim) : C.border}`, fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.08em", cursor: "pointer", transition: "all 0.15s", boxShadow: outlet === i ? SHADOW.pill(partisanColor(out.lean)) : "none" }}>{out.name.split(" ").pop()}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ width: "min(360px, 100%)", aspectRatio: "1/1", background: "#08090d", position: "relative", overflow: "hidden", borderRadius: 16, border: `1px solid ${C.border}`, boxShadow: "0 24px 80px rgba(0,0,0,0.95), 0 8px 32px rgba(0,0,0,0.7)", flexShrink: 0 }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: `linear-gradient(90deg,${DEM},${C.gold},${REP})`, borderRadius: "16px 16px 0 0" }} />
+          <div style={{ position: "absolute", inset: 0, opacity: 0.025, backgroundImage: "repeating-linear-gradient(0deg,rgba(255,255,255,0.6) 0px,transparent 1px,transparent 4px)" }} />
+          <div style={{ position: "absolute", inset: "22px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.85rem", color: C.red, letterSpacing: "0.1em" }}>THE RECORD CHECK</div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.34rem", color: C.muted, marginTop: 1 }}>@therecordcheck</div>
+              </div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.34rem", color: C.muted, textAlign: "right" }}>
+                <div>KOSA</div><div style={{ color: accent }}>{o.name.split(" ").pop()}</div>
+              </div>
+            </div>
+            {cardType === "gap" && (
+              <div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: C.muted, letterSpacing: "0.14em", marginBottom: "0.65rem" }}>THE GAP</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.55rem" }}>
+                  <div style={{ background: "#0d1117", border: `1px solid ${DEM}33`, borderTop: `2px solid ${DEM}`, borderRadius: 7, padding: "0.65rem 0.6rem" }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", color: DEM, letterSpacing: "0.1em", marginBottom: "0.25rem" }}>BILL SAYS</div>
+                    <div style={{ fontFamily: "Georgia, serif", fontSize: "0.64rem", color: "#94a3b8", lineHeight: 1.5 }}>Platforms must act in the best interests of minor users.</div>
+                  </div>
+                  <div style={{ background: "#0d1117", border: `1px solid ${accent}33`, borderTop: `2px solid ${accent}`, borderRadius: 7, padding: "0.65rem 0.6rem" }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", color: accent, letterSpacing: "0.1em", marginBottom: "0.25rem" }}>{o.name.split(" ").pop()} SAID</div>
+                    <div style={{ fontFamily: "Georgia, serif", fontSize: "0.64rem", color: "#94a3b8", lineHeight: 1.5 }}>{(o.headline || "").slice(0, 65)}...</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {cardType === "lede" && (
+              <div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: C.muted, letterSpacing: "0.14em", marginBottom: "0.65rem" }}>BURIED LEDE</div>
+                <div style={{ background: "#0d1117", border: `1px solid ${C.border}`, borderLeft: `3px solid ${accent}`, borderRadius: "0 7px 7px 0", padding: "0.75rem 0.7rem" }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", color: accent, letterSpacing: "0.1em", marginBottom: "0.28rem" }}>WHAT THEY LED WITH</div>
+                  <div style={{ fontFamily: "Georgia, serif", fontSize: "0.62rem", color: C.muted, lineHeight: 1.5, marginBottom: "0.55rem", fontStyle: "italic" }}>"{(o.headline || "").slice(0, 55)}..."</div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", color: C.cream, letterSpacing: "0.1em", marginBottom: "0.28rem" }}>THE REAL NEWS</div>
+                  <div style={{ fontFamily: "Georgia, serif", fontSize: "0.62rem", color: C.cream, lineHeight: 1.5, fontStyle: "italic" }}>{(o.billText || "").slice(0, 75)}...</div>
+                </div>
+              </div>
+            )}
+            {cardType === "stat" && (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "5.5rem", color: C.red, lineHeight: 1, letterSpacing: "-2px", textShadow: `0 4px 32px ${C.red}55` }}>72</div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: C.muted, letterSpacing: "0.18em", marginBottom: "0.4rem" }}>DIVERGENCE SCORE</div>
+                <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.95rem", color: C.cream, letterSpacing: "0.04em" }}>Kids Online Safety Act</div>
+              </div>
+            )}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", color: C.dim, lineHeight: 1.5 }}>What the bill says.<br/>What they told you.<br/>The gap.</div>
+              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.6rem", color: C.muted, letterSpacing: "0.08em" }}>S. 4638</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: C.muted }}>1080×1080 · Screenshot to save · Full export in next release</div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("brief");
   const [mounted, setMounted] = useState(true);
@@ -2041,6 +2152,7 @@ export default function App() {
     pulse:     wrap("pulse",     <ReaderPulse bill={bill} />),
     lede:      wrap("lede",      <BuriedLede bill={bill} />),
     officials: wrap("officials", <OfficialsDB />),
+    cards:     wrap("cards",     <CardGenerator />),
   };
 
   return (
@@ -2057,6 +2169,7 @@ export default function App() {
         ::-webkit-scrollbar-track{background:#0a0f1e}
         ::-webkit-scrollbar-thumb{background:#1b2d5c}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
         @keyframes pulseGlow{0%,100%{box-shadow:0 0 6px rgba(255,255,255,0.8)}50%{box-shadow:0 0 12px rgba(255,255,255,1)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         input::placeholder{color:#2a3d6e}
@@ -2123,80 +2236,28 @@ export default function App() {
         </div>
 
         {/* ── Scroll banner tabs — minimizable ── */}
-        <div style={{ flexShrink: 0, background: C.header, borderBottom: "3px solid " + activeNav.color, transition: "all 0.3s ease" }}>
-
-          {/* Collapsed mini-bar — always visible */}
-          <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", height: 32, gap: "0.75rem" }}>
-
-            {/* Toggle button */}
-            <button
-              onClick={() => setTabsOpen(o => !o)}
-              style={{
-                fontFamily: "'JetBrains Mono', monospace", fontSize: "0.48rem",
-                color: tabsOpen ? C.muted : activeNav.color,
-                background: "transparent", border: "none", cursor: "pointer",
-                display: "flex", alignItems: "center", gap: "0.35rem",
-                letterSpacing: "0.06em", flexShrink: 0, padding: "0.2rem 0",
-                transition: "color 0.2s",
-              }}
-            >
-              <span style={{ fontSize: "0.65rem", transition: "transform 0.3s ease", display: "inline-block", transform: tabsOpen ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
-              {tabsOpen ? "COLLAPSE" : "SECTIONS"}
-            </button>
-
-            {/* Divider */}
-            <div style={{ width: 1, height: 14, background: C.navy, flexShrink: 0 }} />
-
-            {/* Active section pill — always visible */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: activeNav.color, flexShrink: 0 }} />
-              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: C.cream, letterSpacing: "0.1em" }}>{activeNav.label}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.dim, letterSpacing: "0.06em" }}>{activeNav.sub}</div>
-            </div>
-
-            {/* Quick-jump dots — collapsed state only */}
-            {!tabsOpen && (
-              <div style={{ marginLeft: "auto", display: "flex", gap: "0.3rem", alignItems: "center" }}>
-                {NAV.map(n => (
-                  <button
-                    key={n.id}
-                    onClick={() => handleTab(n.id)}
-                    title={n.label}
-                    style={{
-                      width: tab === n.id ? 16 : 8,
-                      height: 8,
-                      borderRadius: 4,
-                      background: tab === n.id ? n.color : C.dimmer,
-                      border: "none", cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      padding: 0,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Section count */}
-            <div style={{ marginLeft: tabsOpen ? "auto" : 0, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.36rem", color: C.dim }}>
-              {activeNav.num} / 08
-            </div>
-          </div>
-
-          {/* Expandable scroll tab row */}
-          <div style={{
-            maxHeight: tabsOpen ? 120 : 0,
-            overflow: tabsOpen ? "visible" : "hidden",
-            transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)",
-          }}>
-            <div className="tab-row" style={{ padding: "0 1rem 0", overflowX: "auto", overflowY: "visible", WebkitOverflowScrolling: "touch" }}>
-              <div style={{ display: "flex", gap: "6px", alignItems: "flex-start", paddingTop: "8px", minWidth: "max-content" }}>
-                {NAV.map(n => <ScrollBannerTab key={n.id} tab={n} isActive={tab === n.id} onClick={() => handleTab(n.id)} />)}
-              </div>
-            </div>
-          </div>
+        <div style={{ flexShrink: 0, background: C.header, borderBottom: "1px solid " + C.navy, padding: "0.55rem 1rem", display: "flex", gap: "0.4rem", overflowX: "auto" }}>
+          {NAV.map(n => {
+            const isA = tab === n.id;
+            return (
+              <button key={n.id} onClick={() => handleTab(n.id)} style={{
+                padding: "0.42rem 0.95rem", flexShrink: 0, whiteSpace: "nowrap",
+                background: isA ? n.color : C.panel,
+                color: isA ? C.cream : C.dim,
+                border: "1px solid " + (isA ? n.color : C.border),
+                borderRadius: 8,
+                fontFamily: "'Bebas Neue', Impact, sans-serif",
+                fontSize: "0.8rem", letterSpacing: "0.1em",
+                transition: "all 0.15s",
+                boxShadow: isA ? SHADOW.pill(n.color) : "none",
+              }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.28rem", color: isA ? "rgba(255,255,255,0.45)" : C.dim, marginRight: "0.3rem" }}>{n.num}</span>
+                {n.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* ── Content ── */}
         <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.4rem", opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-6px)", transition: "opacity 0.2s ease, transform 0.2s ease" }}>
           {loading
             ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60%", gap: "0.75rem" }}>
