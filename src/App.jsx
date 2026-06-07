@@ -576,10 +576,10 @@ function BillSearchBox({ onSelect }) {
 }
 
 const OUTLETS = [
-  { name: "New York Times", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "§ 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
-  { name: "Wall Street Journal", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "§ 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
-  { name: "NPR", lean: 33, tone: "neutral", coverage: 94, date: "Mar 20, 2025", headline: "Kids Online Safety Act — What It Actually Does", angle: "Explanatory and balanced. Best overall coverage of actual provisions.", billSection: "§ 4(b)(2) — Parental Tools", billText: "A covered platform shall provide a minor user's parent or legal guardian with tools to: (A) supervise the minor's use of platform features; (B) limit the time a minor may spend using the platform; (C) restrict the minor's ability to make in-application purchases; and (D) access a summary of the content categories to which the minor has been exposed during the preceding 30 days.", keywords: ["parent or legal guardian", "limit the time", "in-application purchases", "content categories"] },
-  { name: "Fox News", lean: 84, tone: "negative", coverage: 44, date: "Mar 22, 2025", headline: "Democrat-Led Bill Could Give Feds Power to Police Teen Internet Use", angle: "Partisan framing leads. Minimal bill substance. Censorship angle dominant.", billSection: "§ 7(a) — FTC Enforcement", billText: "The Federal Trade Commission shall enforce this Act in the same manner, by the same means, and with the same jurisdiction, powers, and duties as though all applicable terms of the Federal Trade Commission Act were incorporated into and made a part of this Act. Any covered platform that violates this Act shall be subject to civil penalties not to exceed $50,000 per violation per day.", keywords: ["Federal Trade Commission shall enforce", "civil penalties", "$50,000 per violation per day"] },
+  { name: "New York Times", url: "https://www.nytimes.com", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "§ 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
+  { name: "Wall Street Journal", url: "https://www.wsj.com", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "§ 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
+  { name: "NPR", url: "https://www.npr.org", lean: 33, tone: "neutral", coverage: 94, date: "Mar 20, 2025", headline: "Kids Online Safety Act — What It Actually Does", angle: "Explanatory and balanced. Best overall coverage of actual provisions.", billSection: "§ 4(b)(2) — Parental Tools", billText: "A covered platform shall provide a minor user's parent or legal guardian with tools to: (A) supervise the minor's use of platform features; (B) limit the time a minor may spend using the platform; (C) restrict the minor's ability to make in-application purchases; and (D) access a summary of the content categories to which the minor has been exposed during the preceding 30 days.", keywords: ["parent or legal guardian", "limit the time", "in-application purchases", "content categories"] },
+  { name: "Fox News", url: "https://www.foxnews.com", lean: 84, tone: "negative", coverage: 44, date: "Mar 22, 2025", headline: "Democrat-Led Bill Could Give Feds Power to Police Teen Internet Use", angle: "Partisan framing leads. Minimal bill substance. Censorship angle dominant.", billSection: "§ 7(a) — FTC Enforcement", billText: "The Federal Trade Commission shall enforce this Act in the same manner, by the same means, and with the same jurisdiction, powers, and duties as though all applicable terms of the Federal Trade Commission Act were incorporated into and made a part of this Act. Any covered platform that violates this Act shall be subject to civil penalties not to exceed $50,000 per violation per day.", keywords: ["Federal Trade Commission shall enforce", "civil penalties", "$50,000 per violation per day"] },
 ];
 const TIMELINE = [
   { month: "Aug '23", event: "Bill Introduced", coverage: 12, tone: "neutral" },
@@ -618,18 +618,28 @@ const NAV = [
   { id: "pulse",     num: "06", label: "Reader Pulse",      sub: "Polling Data",           color: "#2E8B57" },
   { id: "lede",      num: "07", label: "Buried Lede",       sub: "What They Hid",          color: "#CC5500" },
   { id: "officials", num: "08", label: "Officials DB",      sub: "Stances & Records",      color: "#0E7490" },
+  { id: "cards",     num: "09", label: "Cards",            sub: "Media Card Generator",   color: "#7C3AED" },
 ];
 
 const TONE_CFG = {
-  supportive: { label: "Supportive", accent: C.gold },
-  neutral:    { label: "Neutral",    accent: "#aabba8" },
-  skeptical:  { label: "Skeptical",  accent: "#c27040" },
-  negative:   { label: "Critical",   accent: C.red },
+  supportive: { label: "Supportive", accent: "#22c55e" },
+  neutral:    { label: "Neutral",    accent: "#94a3b8" },
+  skeptical:  { label: "Skeptical",  accent: "#a855f7" },
+  negative:   { label: "Critical",   accent: "#ef4444" },
 };
 const leanColor = s => partisanColor(s);
 const leanLabel = s => partisanLabel(s);
 const demoColor = v => v >= 68 ? C.gold : v >= 58 ? C.blue : C.red;
-const toneColor = t => ({ supportive: C.gold, neutral: "#aabba8", skeptical: "#c27040", negative: C.red })[t] || C.cream;
+const toneColor = t => TONE_CFG[t]?.accent || C.cream;
+
+const SHADOW = {
+  card:  "0 8px 48px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.5)",
+  tone:  t   => { const col = TONE_CFG[t]?.accent || "#94a3b8"; return `0 0 0 1px ${col}33, 0 4px 16px ${col}55, 0 8px 24px ${col}22, 0 2px 6px rgba(0,0,0,0.9)`; },
+  bias:  col => `0 0 0 1px ${col}33, 0 4px 16px ${col}55, 0 8px 24px ${col}22, 0 2px 6px rgba(0,0,0,0.9)`,
+  pill:  col => `0 0 0 1px ${col}44, 0 4px 16px ${col}77, 0 8px 24px ${col}33`,
+  glow:  col => `0 6px 32px ${col}55, 0 2px 12px ${col}33`,
+  stat:  col => `0 12px 56px ${col}66, 0 4px 24px ${col}44`,
+};
 
 // ── Primitives ─────────────────────────────────────────────────
 function Bar({ pct, color, h }) {
@@ -841,6 +851,82 @@ function ScrollBannerTab({ tab, isActive, onClick }) {
 }
 
 // ── TAB CONTENTS (same as before, compact) ────────────────────
+
+// ── Outlet toggle pill ──────────────────────────────────────────
+function OutletPill({ outlet, active, onClick }) {
+  const accent = (TONE_CFG[outlet.tone]?.accent) || "#94a3b8";
+  const biasColor = partisanColor(outlet.lean);
+  return (
+    <button onClick={onClick} style={{
+      padding: "0.35rem 0.85rem",
+      background: active ? accent : C.panel,
+      color: active ? C.bg : C.dim,
+      border: `1px solid ${active ? accent : C.border}`,
+      borderRadius: 8,
+      fontFamily: "'Bebas Neue', Impact, sans-serif",
+      fontSize: "0.88rem", letterSpacing: "0.1em",
+      cursor: "pointer", transition: "all 0.2s",
+      boxShadow: active ? SHADOW.pill(biasColor) : "none",
+    }}>
+      {outlet.name}
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.32rem", opacity: 0.7, marginLeft: 4 }}>{outlet.coverage}%</span>
+    </button>
+  );
+}
+
+// ── Outlet expanded card ─────────────────────────────────────────
+function OutletExpandedCard({ outlet, showText }) {
+  const accent = TONE_CFG[outlet.tone]?.accent || "#94a3b8";
+  const biasColor = partisanColor(outlet.lean);
+  return (
+    <div style={{
+      background: C.panel, border: `1px solid ${C.border}`,
+      borderLeft: `4px solid ${accent}`, borderRadius: 10,
+      padding: "1.1rem 1.2rem",
+      boxShadow: `0 0 0 1px ${biasColor}33, 0 4px 16px ${biasColor}55, 0 8px 24px ${biasColor}22, 0 2px 6px rgba(0,0,0,0.9)`,
+      animation: "slideDown 0.2s ease",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+        <div>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, letterSpacing: "0.04em" }}>{outlet.name}</div>
+          <div style={{ display: "flex", gap: "0.4rem", alignItems: "center", marginTop: 3 }}>
+            <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.6rem", color: accent, border: `1px solid ${accent}44`, padding: "0.08rem 0.4rem", borderRadius: 4, letterSpacing: "0.1em" }}>{TONE_CFG[outlet.tone]?.label || outlet.tone}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.muted }}>{outlet.coverage}% coverage</span>
+          </div>
+        </div>
+        <div style={{ width: 80 }}>
+          <div style={{ position: "relative", height: 5, background: `linear-gradient(90deg,${DEM},${IND},${REP})`, borderRadius: 3 }}>
+            <div style={{ position: "absolute", top: "50%", left: outlet.lean + "%", transform: "translate(-50%,-50%)", width: 11, height: 11, borderRadius: "50%", background: partisanColor(outlet.lean), border: `2px solid ${C.bg}` }} />
+          </div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.34rem", color: partisanColor(outlet.lean), textAlign: "center", marginTop: 3 }}>{partisanLabel(outlet.lean)}</div>
+        </div>
+      </div>
+      {outlet.url
+        ? <a href={outlet.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, lineHeight: 1.2, marginBottom: "0.5rem", letterSpacing: "0.02em" }}>
+              {outlet.headline} <span style={{ fontSize: "0.5rem", opacity: 0.5 }}>↗</span>
+            </div>
+          </a>
+        : <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, lineHeight: 1.2, marginBottom: "0.5rem", letterSpacing: "0.02em" }}>{outlet.headline}</div>
+      }
+      <div style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.82rem", color: C.muted, lineHeight: 1.6, marginBottom: showText ? "1rem" : 0 }}>{outlet.angle}</div>
+      {showText && (
+        <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "0.85rem", marginTop: "0.25rem" }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.7rem", color: accent, letterSpacing: "0.1em", marginBottom: "0.5rem" }}>{outlet.billSection}</div>
+          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, padding: "0.85rem 1rem", fontFamily: "Georgia, serif", fontSize: "0.88rem", color: "#7a9ab8", lineHeight: 1.9 }}>
+            <HLText text={outlet.billText} keywords={outlet.keywords} accent={accent} />
+          </div>
+          {outlet.keywords?.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "0.6rem" }}>
+              {outlet.keywords.map((k, i) => <span key={i} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: accent, background: accent + "14", border: `1px solid ${accent}2a`, padding: "0.18rem 0.45rem", borderRadius: 4 }}>{k}</span>)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BillBrief({ bill, loading }) {
   const B = bill || DEFAULT_BILL;
   const hasLiveData = bill && bill !== DEFAULT_BILL;
@@ -950,87 +1036,31 @@ function SourceSelector({ active, onSelect, loading, error }) {
 }
 
 function MediaAnalysis({ bill, archivalData, sourceLoading, sourceError, activeSource, onSourceSelect }) {
-  const [active, setActive] = useState(0);
-
-  // Use live archival outlets if available, fall back to demo OUTLETS
-  const liveOutlets = archivalData?.mediaAnalysis?.outlets;
-  const displayOutlets = liveOutlets?.length ? liveOutlets.map(o => ({
-    name: o.name, lean: o.lean || 50, tone: o.tone || "neutral",
-    coverage: o.coverage || 50, date: o.date || "",
-    headline: o.headline || "", angle: o.angle || "",
-    billSection: "§ — Live Data", billText: o.angle || "Article text unavailable — click URL to read full article.",
-    keywords: [], url: o.url || "",
-  })) : OUTLETS;
-
-  const o = displayOutlets[Math.min(active, displayOutlets.length - 1)];
-  const t = TONE_CFG[o.tone] || TONE_CFG.neutral;
-
+  const [selected, setSelected] = useState(new Set());
+  const toggle = i => setSelected(prev => {
+    const next = new Set(prev);
+    next.has(i) ? next.delete(i) : next.add(i);
+    return next;
+  });
+  const displayOutlets = archivalData?.mediaAnalysis?.outlets?.length
+    ? archivalData.mediaAnalysis.outlets.map(o => ({ ...o, url: "", billSection: "Live Data", billText: o.angle || "", keywords: [] }))
+    : OUTLETS;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
-
-      {/* Source selector */}
-      <SourceSelector active={activeSource} onSelect={onSourceSelect} loading={sourceLoading} error={sourceError} />
-
-      {/* Coverage summary from live data */}
-      {archivalData?.mediaAnalysis?.coverageSummary && (
-        <div style={{ background: C.bg, border: "1px solid " + C.border, borderLeft: "4px solid #4A8FA8", padding: "0.65rem 0.9rem" }}>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "baseline", marginBottom: "0.25rem" }}>
-            <MN color={"#4A8FA8"} size="0.44rem" spacing="0.12em">LIVE COVERAGE SUMMARY</MN>
-            <MN color={C.dim} size="0.4rem">{archivalData.mediaAnalysis.totalArticleCount} articles indexed</MN>
-          </div>
-          <div style={{ fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.84rem", color: C.muted, lineHeight: 1.65 }}>
-            {archivalData.mediaAnalysis.coverageSummary}
-          </div>
-          {archivalData.mediaAnalysis.dominantFraming && (
-            <div style={{ marginTop: "0.35rem", fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.75rem", color: C.cream, letterSpacing: "0.06em" }}>
-              {archivalData.mediaAnalysis.dominantFraming}
-            </div>
-          )}
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      <div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: C.dim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: "0.6rem" }}>Select outlets to compare</div>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {displayOutlets.map((o, i) => <OutletPill key={i} outlet={o} active={selected.has(i)} onClick={() => toggle(i)} />)}
+        </div>
+      </div>
+      {selected.size === 0 && (
+        <div style={{ textAlign: "center", padding: "2.5rem 1rem", border: `1px dashed ${C.border}`, borderRadius: 10 }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.1rem", color: C.dim, letterSpacing: "0.08em" }}>Tap any outlet above</div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", color: C.muted, marginTop: "0.4rem" }}>Cards stack as you select them</div>
         </div>
       )}
-
-      {/* Outlet cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.5rem" }}>
-        {displayOutlets.slice(0, 8).map((out, i) => {
-          const tc = TONE_CFG[out.tone] || TONE_CFG.neutral; const isA = active === i;
-          return (
-            <div key={i} onClick={() => setActive(i)} style={{ cursor: "pointer", background: isA ? C.panelHi : C.panel, border: "1px solid " + (isA ? tc.accent + "55" : C.border), borderTop: "4px solid " + (isA ? tc.accent : C.border), padding: "0.8rem", transition: "all 0.18s" }}>
-              <MN color={isA ? C.muted : C.dim} size="0.46rem">{out.name} {out.date ? "· " + out.date : ""}</MN>
-              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.85rem", color: isA ? "#fff" : C.dim, lineHeight: 1.2, margin: "0.32rem 0 0.45rem" }}>{out.headline || out.name}</div>
-              <div style={{ display: "inline-block", fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", letterSpacing: "0.12em", color: tc.accent, border: "1px solid " + tc.accent + "44", padding: "0.08rem 0.38rem", marginBottom: "0.42rem" }}>{tc.label}</div>
-              <Bar pct={out.coverage} color={tc.accent} h={4} />
-              <MN color={C.dim} size="0.38rem">{out.coverage}% coverage</MN>
-              {out.url && isA && <div style={{ marginTop: "0.3rem" }}><a href={out.url} target="_blank" rel="noreferrer" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.36rem", color: "#4A8FA8", letterSpacing: "0.04em" }}>→ Read article</a></div>}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Detail panel */}
-      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1rem 1.3rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.4rem" }}>
-        <div>
-          <SL accent={t.accent}>Actual Bill Language</SL>
-          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", color: t.accent, letterSpacing: "0.1em", marginBottom: "0.45rem" }}>{o.billSection}</div>
-          <div style={{ background: C.bg, border: "1px solid " + C.navy, borderLeft: "3px solid " + t.accent + "55", padding: "0.8rem 0.95rem", marginBottom: "0.45rem", fontFamily: "'Georgia', serif", fontSize: "0.84rem", color: "#7a9ab8", lineHeight: 1.85 }}>
-            <HLText text={o.billText} keywords={o.keywords || []} accent={t.accent} />
-          </div>
-          {(o.keywords || []).length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.28rem" }}>
-              {o.keywords.map((k, i) => <span key={i} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: t.accent, background: t.accent + "12", border: "1px solid " + t.accent + "44", padding: "0.1rem 0.32rem" }}>{k}</span>)}
-            </div>
-          )}
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
-          <div><SL accent={t.accent}>Editorial Angle</SL><div style={{ fontFamily: "'Georgia', serif", fontSize: "0.84rem", color: C.muted, lineHeight: 1.7 }}>{o.angle || "Select an outlet above to see their angle."}</div></div>
-          <div>
-            <SL accent={t.accent}>Political Lean</SL>
-            <div style={{ position: "relative", height: 7, background: "linear-gradient(90deg," + DEM + "," + IND + "," + REP + ")", borderRadius: 4, marginBottom: 7 }}>
-              <div style={{ position: "absolute", top: "50%", left: o.lean + "%", transform: "translate(-50%,-50%)", width: 15, height: 15, borderRadius: "50%", background: leanColor(o.lean), border: "2.5px solid " + C.bg, boxShadow: "0 0 10px " + leanColor(o.lean) + "88" }} />
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><MN color={DEM} size="0.42rem">DEM</MN><BN color={leanColor(o.lean)} size="0.95rem">{leanLabel(o.lean)}</BN><MN color={REP} size="0.42rem">REP</MN></div>
-          </div>
-          <div><SL accent={t.accent}>Coverage Score</SL><BN color={t.accent} size="2.8rem">{o.coverage}<span style={{ fontSize: "1.1rem" }}>%</span></BN><Bar pct={o.coverage} color={t.accent} h={6} /></div>
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        {displayOutlets.map((o, i) => selected.has(i) && <OutletExpandedCard key={i} outlet={o} showText={false} />)}
       </div>
     </div>
   );
@@ -1038,38 +1068,130 @@ function MediaAnalysis({ bill, archivalData, sourceLoading, sourceError, activeS
 
 function BillLanguage({ bill }) {
   const B = bill || DEFAULT_BILL;
-  const [sel, setSel] = useState(0);
-  const o = OUTLETS[sel]; const t = TONE_CFG[o.tone];
-  const parts = o.billSection.split("—");
+  const [selected, setSelected] = useState(new Set());
+  const [fullscreen, setFullscreen] = useState(null);
+  const [keyword, setKeyword] = useState("");
+
+  const toggle = i => setSelected(prev => {
+    const next = new Set(prev);
+    next.has(i) ? next.delete(i) : next.add(i);
+    return next;
+  });
+
+  const highlight = (text, kw, accent) => {
+    if (!kw.trim()) return <HLText text={text} keywords={OUTLETS[0]?.keywords||[]} accent={accent} />;
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const parts = text.split(new RegExp("(" + escaped + ")", "gi"));
+    return <span>{parts.map((p, i) =>
+      p.toLowerCase() === kw.toLowerCase()
+        ? <mark key={i} style={{ background: C.gold + "33", color: C.gold, borderBottom: "2px solid " + C.gold, padding: "0 2px", borderRadius: 2, fontWeight: 700 }}>{p}</mark>
+        : <span key={i}>{p}</span>
+    )}</span>;
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
-      {/* Bill identity */}
-      <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + C.gold, padding: "0.5rem 0.85rem" }}>
-        <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: C.cream, letterSpacing: "0.06em" }}>{B.name}</div>
-        <MN color={C.dim} size="0.4rem">{B.id} · Select outlet below to compare coverage vs bill text</MN>
-      </div>
-      <div style={{ display: "flex", gap: "0.38rem", flexWrap: "wrap" }}>
-        {OUTLETS.map((out, i) => <button key={i} onClick={() => setSel(i)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", letterSpacing: "0.1em", padding: "0.32rem 0.8rem", background: sel === i ? TONE_CFG[out.tone].accent : C.panel, color: sel === i ? C.bg : C.dim, border: "1px solid " + (sel === i ? TONE_CFG[out.tone].accent : C.border), cursor: "pointer", transition: "all 0.15s" }}>{out.name}</button>)}
-      </div>
-      <div style={{ background: C.panel, border: "1px solid " + t.accent + "33", borderLeft: "4px solid " + t.accent, padding: "1.1rem 1.3rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "170px 1fr", gap: "1.1rem", alignItems: "start", marginBottom: "1rem" }}>
-          <div><BN color={t.accent} size="1.6rem">{parts[0] ? parts[0].trim() : o.billSection}</BN>{parts[1] && <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", color: C.cream, marginTop: 3 }}>{parts[1].trim()}</div>}</div>
-          <div style={{ display: "flex", gap: "0.45rem", flexWrap: "wrap", alignItems: "center" }}>
-            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", letterSpacing: "0.12em", color: t.accent, border: "1px solid " + t.accent + "44", padding: "0.1rem 0.5rem" }}>{TONE_CFG[o.tone].label} Coverage</div>
-            <MN color={C.dim} size="0.4rem">{o.name} · S. 4638, 118th Congress</MN>
+    <>
+      {/* Fullscreen layer */}
+      {fullscreen !== null && (
+        <div style={{ position: "fixed", inset: 0, background: C.bg, zIndex: 9999, display: "flex", flexDirection: "column", animation: "slideDown 0.2s ease" }}>
+          {/* Header */}
+          <div style={{ background: C.surface, borderBottom: "1px solid " + C.border, padding: "0.75rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
+            <button onClick={() => setFullscreen(null)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.muted, background: C.panel, border: "1px solid " + C.border, borderRadius: 8, padding: "0.3rem 0.7rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+              ← Back
+            </button>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.95rem", color: C.cream, letterSpacing: "0.04em" }}>{OUTLETS[fullscreen]?.name}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.muted }}>{OUTLETS[fullscreen]?.section}</div>
+            </div>
+            <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", color: TONE_CFG[OUTLETS[fullscreen]?.tone]?.accent, border: "1px solid " + TONE_CFG[OUTLETS[fullscreen]?.tone]?.accent + "44", padding: "0.1rem 0.4rem", borderRadius: 6 }}>
+              {TONE_CFG[OUTLETS[fullscreen]?.tone]?.label}
+            </span>
+          </div>
+
+          {/* Keyword search */}
+          <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid " + C.border, background: C.surface, flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: 8, height: 34, padding: "0 0.65rem", gap: "0.4rem" }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — type any keyword or section number..."
+                style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
+              {keyword && <button onClick={() => setKeyword("")} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>}
+            </div>
+          </div>
+
+          {/* Full bill text */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem 1.25rem" }}>
+            {(() => {
+              const o = OUTLETS[fullscreen];
+              const accent = TONE_CFG[o?.tone]?.accent || C.gold;
+              return (
+                <>
+                  <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.1rem", color: accent, letterSpacing: "0.06em", marginBottom: "0.35rem" }}>{o?.section}</div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.muted, marginBottom: "1rem" }}>{o?.name} · {o?.tone} coverage · {o?.coverage}% volume</div>
+                  <div style={{ fontFamily: "Georgia, serif", fontSize: "1.05rem", color: "#94a3b8", lineHeight: 2.1, borderLeft: "4px solid " + accent, paddingLeft: "1.25rem" }}>
+                    {keyword ? highlight(o?.billText || "", keyword, accent) : <HLText text={o?.billText || ""} keywords={o?.keywords || []} accent={accent} />}
+                  </div>
+                  {keyword && (
+                    <div style={{ marginTop: "1.5rem", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.42rem", color: C.muted }}>
+                      {(o?.billText || "").toLowerCase().split(keyword.toLowerCase()).length - 1} match{(o?.billText || "").toLowerCase().split(keyword.toLowerCase()).length - 1 !== 1 ? "es" : ""} for "{keyword}"
+                    </div>
+                  )}
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.4rem", color: C.muted, letterSpacing: "0.12em", marginBottom: "0.5rem" }}>KEY TERMS IN THIS SECTION</div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+                      {(o?.keywords || []).map((k, i) => (
+                        <button key={i} onClick={() => setKeyword(k)} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.46rem", color: accent, background: accent + "14", border: "1px solid " + accent + "2a", padding: "0.2rem 0.5rem", borderRadius: 4, cursor: "pointer" }}>{k}</button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
-        <div style={{ background: C.bg, border: "1px solid " + C.navy, borderLeft: "4px solid " + t.accent, padding: "1.1rem 1.35rem", fontFamily: "'Georgia', serif", fontSize: "0.95rem", color: "#7a9ab8", lineHeight: 2.05, marginBottom: "1rem" }}>
-          <HLText text={o.billText} keywords={o.keywords} accent={t.accent} />
+      )}
+
+      {/* Normal view */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + C.gold, padding: "0.5rem 0.85rem", borderRadius: 8, boxShadow: SHADOW.glow(C.gold) }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: C.cream, letterSpacing: "0.06em" }}>{B.name}</div>
+          <MN color={C.muted} size="0.4rem">{B.id} · Tap outlets to expand · Tap card to read full text</MN>
         </div>
-        <SL accent={t.accent}>Why These Words Matter</SL>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(190px,1fr))", gap: "0.5rem" }}>
-          {o.keywords.map((k, i) => <div key={i} style={{ background: t.accent + "0a", border: "1px solid " + t.accent + "22", borderLeft: "3px solid " + t.accent, padding: "0.55rem 0.75rem" }}><div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", color: t.accent, fontWeight: 600 }}>{k}</div></div>)}
+
+        {/* Keyword search bar */}
+        <div style={{ display: "flex", alignItems: "center", background: C.panel, border: "1px solid " + C.border, borderRadius: 8, height: 36, padding: "0 0.65rem", gap: "0.4rem", boxShadow: SHADOW.card }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — keyword or section..."
+            style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
+          {keyword && <button onClick={() => setKeyword("")} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>}
+        </div>
+
+        <div>
+          <MN color={C.dim} size="0.42rem" spacing="0.16em">TOGGLE OUTLETS · TAP CARD TO OPEN FULL TEXT</MN>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.6rem" }}>
+            {OUTLETS.map((o, i) => <OutletPill key={i} outlet={o} active={selected.has(i)} onClick={() => toggle(i)} />)}
+          </div>
+        </div>
+
+        {selected.size === 0 && (
+          <div style={{ textAlign: "center", padding: "2.5rem 1rem", border: "1px dashed " + C.border, borderRadius: 10 }}>
+            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.1rem", color: C.dim, letterSpacing: "0.08em" }}>Select an outlet above</div>
+            <MN color={C.muted} size="0.44rem">Tap any card to open the full statutory text</MN>
+          </div>
+        )}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {OUTLETS.map((o, i) => selected.has(i) && (
+            <div key={i} onClick={() => setFullscreen(i)} style={{ cursor: "pointer" }}>
+              <OutletExpandedCard outlet={o} showText={true} keyword={keyword} />
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.muted, textAlign: "right", marginTop: "0.3rem", paddingRight: "0.25rem" }}>Tap to open full text →</div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
+
 
 function CommentaryStudio({ bill }) {
   const B = bill || DEFAULT_BILL;
@@ -1191,37 +1313,48 @@ async function fetchPolling(bill) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
+      max_tokens: 1500,
       messages: [{
         role: "user",
-        content: `You are a polling analyst. For the federal bill below, return real polling data if you have it in your training data, or generate a realistic estimate based on the bill's policy area, sponsor party, vote history, and comparable legislation.
+        content: `You are a senior political polling analyst. Return the most accurate polling data available for this bill, or a highly detailed realistic estimate based on comparable legislation, known public sentiment patterns, and demographic voting behavior.
 
 Bill: ${bill.name}
 ID: ${bill.id}
 Sponsor: ${bill.sponsor}
 Status: ${bill.status}
-Summary: ${bill.summary?.slice(0, 300)}
+Summary: ${bill.summary?.slice(0, 400)}
 
-Return ONLY a JSON object, no markdown, no explanation:
+Be specific. Include real poll names and dates where you have them. For estimates, base them on documented comparable legislation.
+
+Return ONLY a JSON object, no markdown:
 {
   "source": "REAL DATA|AI ESTIMATE",
-  "sourceDetail": "e.g. Pew Research Mar 2025 or Based on similar healthcare legislation",
+  "sourceDetail": "Specific e.g. Pew Research Center March 2025, or AI estimate based on [3 comparable bills listed]",
   "confidence": "HIGH|MEDIUM|LOW",
+  "confidenceReason": "One sentence explaining confidence level",
   "overall": 58,
   "oppose": 32,
   "undecided": 10,
   "trend": "Rising|Falling|Stable",
-  "trendData": [
-    {"m":"Jan","v":52},{"m":"Feb","v":54},{"m":"Mar","v":56},{"m":"Apr","v":57},{"m":"May","v":58}
-  ],
+  "trendDetail": "One sentence on why support is trending this direction",
+  "trendData": [{"m":"Jan","v":52},{"m":"Feb","v":54},{"m":"Mar","v":56},{"m":"Apr","v":57},{"m":"May","v":58}],
   "party": {"dem": 74, "rep": 38, "ind": 55},
+  "partyNote": "One sentence on the partisan divide and why it exists for this bill",
   "demos": [
     {"g":"18-34","v":64},{"g":"35-54","v":58},{"g":"55+","v":51},
-    {"g":"College+","v":62},{"g":"No degree","v":52},
-    {"g":"Urban","v":66},{"g":"Rural","v":46}
+    {"g":"Urban","v":66},{"g":"Suburban","v":55},{"g":"Rural","v":41},
+    {"g":"College","v":63},{"g":"No College","v":49}
   ],
-  "keyFinding": "One sentence: the most notable or surprising polling result for this bill.",
-  "contentMoment": "One sentence telling a content creator exactly how to use this data as a story angle."
+  "regional": [
+    {"region":"Northeast","v":68},{"region":"Midwest","v":52},
+    {"region":"South","v":44},{"region":"West","v":61}
+  ],
+  "keyFinding": "One punchy sentence: the single most surprising or important polling result.",
+  "contentMoment": "One sentence: the specific story angle a political content creator should lead with.",
+  "comparisons": [
+    {"bill":"[Most similar bill name]","support":55,"year":2022},
+    {"bill":"[Another comparable bill]","support":61,"year":2021}
+  ]
 }`
       }]
     }),
@@ -1349,7 +1482,7 @@ function ReaderPulse({ bill }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.7rem" }}>
 
             {/* Card 1 — Overall */}
-            <Card>
+            <Card style={{boxShadow:SHADOW.glow(C.gold)}}>
               <SL accent={C.gold}>National Support</SL>
               <BN color={C.gold} size="5rem"><AnimNum target={d.overall} /></BN>
               <MN color={C.gold} size="0.48rem">{d.trend} · {d.undecided}% undecided</MN>
@@ -1544,7 +1677,7 @@ function BuriedLede({ bill }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.7rem" }}>
 
         {/* What they led with */}
-        <div style={{ background: C.panel, borderTop: "4px solid " + C.blue, padding: "1.1rem" }}>
+        <div style={{ background: C.panel, borderTop: "4px solid " + C.blue, padding: "1.1rem", boxShadow: SHADOW.bias(C.blue) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: C.blue, marginBottom: "0.75rem" }}>
             WHAT THEY LED WITH
           </div>
@@ -1554,7 +1687,7 @@ function BuriedLede({ bill }) {
         </div>
 
         {/* The real news */}
-        <div style={{ background: C.panel, borderTop: "4px solid " + C.red, padding: "1.1rem" }}>
+        <div style={{ background: C.panel, borderTop: "4px solid " + C.red, padding: "1.1rem", boxShadow: SHADOW.bias(C.red) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: C.red, marginBottom: "0.75rem" }}>
             THE REAL NEWS
           </div>
@@ -1566,7 +1699,7 @@ function BuriedLede({ bill }) {
 
       {/* AI verdict strip */}
       {aiResult && (
-        <div style={{ background: C.panel, border: "1px solid " + gradeColor + "44", borderLeft: "4px solid " + gradeColor, padding: "0.9rem 1.1rem", display: "grid", gridTemplateColumns: "52px 1fr", gap: "1rem", alignItems: "center" }}>
+        <div style={{ background: C.panel, border: "1px solid " + gradeColor + "44", borderLeft: "4px solid " + gradeColor, padding: "0.9rem 1.1rem", display: "grid", gridTemplateColumns: "52px 1fr", gap: "1rem", alignItems: "center", boxShadow: SHADOW.glow(gradeColor) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "2.4rem", color: gradeColor, lineHeight: 1, textAlign: "center", border: "2px solid " + gradeColor, width: 52, height: 52, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 12px " + gradeColor + "44" }}>
             {aiResult.grade}
           </div>
@@ -1709,8 +1842,22 @@ function partyDotColor(p) {
   return IND;
 }
 
+
+const TRENDING_POLITICIANS = [
+  { name: "Bernie Sanders",      party: "D", state: "VT", chamber: "Senate",  status: "Active",   id: "S000033", imageUrl: "" },
+  { name: "Alexandria Ocasio-Cortez", party: "D", state: "NY", chamber: "House", status: "Active", id: "O000172", imageUrl: "" },
+  { name: "Ted Cruz",            party: "R", state: "TX", chamber: "Senate",  status: "Active",   id: "C001098", imageUrl: "" },
+  { name: "Elizabeth Warren",    party: "D", state: "MA", chamber: "Senate",  status: "Active",   id: "W000817", imageUrl: "" },
+  { name: "Marco Rubio",         party: "R", state: "FL", chamber: "Senate",  status: "Active",   id: "R000595", imageUrl: "" },
+  { name: "Barack Obama",        party: "D", state: "IL", chamber: "President", status: "Former", id: "historical", imageUrl: "" },
+  { name: "Donald Trump",        party: "R", state: "FL", chamber: "President", status: "Active",  id: "historical", imageUrl: "" },
+  { name: "Ron DeSantis",        party: "R", state: "FL", chamber: "Governor", status: "Running", id: "historical", imageUrl: "" },
+  { name: "Nikki Haley",         party: "R", state: "SC", chamber: "Former Gov", status: "Former", id: "historical", imageUrl: "" },
+  { name: "Gavin Newsom",        party: "D", state: "CA", chamber: "Governor", status: "Active",  id: "historical", imageUrl: "" },
+];
+
 function OfficialsDB() {
-  const [mode, setMode] = useState("name");      // name | district | issue | status
+  const [mode, setMode] = useState("name");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -1718,21 +1865,25 @@ function OfficialsDB() {
   const [detail, setDetail] = useState(null);
   const [stances, setStances] = useState(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
-  const [view, setView] = useState("summary");   // summary | detailed
+  const [view, setView] = useState("summary");
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [showPreemptive, setShowPreemptive] = useState(true);
 
+  const TEAL = "#0E7490";
   const MODES = [
-    { id: "name",     label: "By Name",     icon: "◉" },
-    { id: "district", label: "By State",    icon: "◈" },
-    { id: "issue",    label: "By Issue",    icon: "§"  },
-    { id: "status",   label: "By Status",   icon: "◷" },
+    { id: "name", label: "Name" }, { id: "district", label: "State" },
+    { id: "issue", label: "Issue" }, { id: "status", label: "Status" },
   ];
 
-  const runSearch = async () => {
-    setSearching(true); setError(null); setResults([]); setSelected(null); setDetail(null); setStances(null);
+  const runSearch = async (q) => {
+    const searchTerm = q || query;
+    setSearching(true); setError(null); setResults([]);
+    setSelected(null); setDetail(null); setStances(null);
+    setShowPreemptive(false); setOpen(false);
     try {
-      const federal = await searchFederalMembers(query);
-      if (federal.length === 0) setError("No federal members matched. (State legislature search needs an OpenStates key — add in deploy.)");
+      const federal = await searchFederalMembers(searchTerm);
+      if (federal.length === 0) setError("No members matched. Try a last name.");
       setResults(federal);
     } catch (e) { setError("Search failed: " + e.message); }
     finally { setSearching(false); }
@@ -1740,66 +1891,114 @@ function OfficialsDB() {
 
   const selectOfficial = async (off) => {
     setSelected(off); setLoadingDetail(true); setDetail(null); setStances(null);
+    if (off.id === "historical") {
+      // Claude synthesizes for historical figures without API call
+      try {
+        const s = await synthesizeStances({ directOrderName: off.name, name: off.name, state: off.state }, []);
+        setStances(s);
+      } catch(e) { setError("Could not synthesize: " + e.message); }
+      finally { setLoadingDetail(false); }
+      return;
+    }
     try {
       const d = await fetchMemberDetail(off.id);
       setDetail(d);
-      if (d?.member) {
-        const s = await synthesizeStances(d.member, d.sponsored);
-        setStances(s);
-      }
+      if (d?.member) { const s = await synthesizeStances(d.member, d.sponsored); setStances(s); }
     } catch (e) { setError("Could not load record: " + e.message); }
     finally { setLoadingDetail(false); }
   };
 
+  const statusColor = s => s === "Active" ? "#22c55e" : s === "Running" ? "#f4a261" : "#94a3b8";
+  const pdc = p => { const s = (p||"").toLowerCase(); return s.includes("democ") ? DEM : s.includes("republic") ? REP : IND; };
+  const lc = s => s <= 35 ? DEM : s <= 55 ? IND : REP;
+
+  const displayList = showPreemptive ? TRENDING_POLITICIANS : results;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
 
-      {/* Search mode selector */}
-      <div style={{ background: C.panel, border: "1px solid " + C.border, padding: "0.7rem 0.85rem" }}>
-        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
+      {/* Search bar */}
+      <div style={{ background: C.panel, border: "1px solid " + C.border, borderRadius: 12, padding: "0.85rem", boxShadow: SHADOW.card }}>
+
+        {/* Mode pills */}
+        <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap", marginBottom: "0.65rem" }}>
           {MODES.map(m => {
             const isA = mode === m.id;
             return (
-              <button key={m.id} onClick={() => setMode(m.id)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.74rem", letterSpacing: "0.1em", padding: "0.3rem 0.75rem", background: isA ? "#0E7490" : "transparent", color: isA ? C.cream : "#0E7490", border: "1px solid #0E7490" + (isA ? "" : "66"), cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" }}>
-                <span style={{ fontSize: "0.6rem" }}>{m.icon}</span>{m.label}
-              </button>
+              <button key={m.id} onClick={() => setMode(m.id)} style={{ padding: "0.28rem 0.7rem", background: isA ? TEAL : "transparent", color: isA ? C.cream : TEAL, border: "1px solid " + TEAL + (isA ? "" : "55"), borderRadius: 8, fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.15s", boxShadow: isA ? SHADOW.pill(TEAL) : "none" }}>{m.label}</button>
             );
           })}
         </div>
-        <div style={{ display: "flex", gap: "0.4rem" }}>
-          <input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && runSearch()}
-            placeholder={mode === "name" ? "Search by name — e.g. Warren, Cruz, Ocasio" : mode === "district" ? "Enter state — e.g. CA, TX, NY" : mode === "issue" ? "Enter issue — e.g. healthcare, guns, climate" : "Status — active, running, retired"}
-            style={{ flex: 1, background: "#0a1525", border: "1px solid " + C.navy, color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.55rem", padding: "0.5rem 0.7rem", outline: "none" }}
-          />
-          <button onClick={runSearch} disabled={searching} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", letterSpacing: "0.12em", color: C.bg, background: searching ? C.dim : "#0E7490", border: "none", padding: "0 1.1rem", cursor: searching ? "wait" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem" }}>
-            {searching && <div style={{ width: 12, height: 12, border: "2px solid " + C.bg, borderTop: "2px solid transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />}
-            {searching ? "..." : "SEARCH"}
-          </button>
+
+        {/* Input row */}
+        <div style={{ position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + (open ? TEAL + "88" : C.border), borderRadius: 8, height: 38, padding: "0 0.65rem", gap: "0.45rem", transition: "border-color 0.15s" }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input value={query} onChange={e => { setQuery(e.target.value); setOpen(true); setShowPreemptive(e.target.value.length === 0); }}
+              onFocus={() => setOpen(true)} onKeyDown={e => e.key === "Enter" && runSearch()}
+              placeholder={mode === "name" ? "Search politicians — tap to see trending..." : mode === "district" ? "State — CA, TX, NY..." : mode === "issue" ? "Issue — healthcare, climate..." : "Status — active, running, former..."}
+              style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.52rem", outline: "none" }} />
+            {searching && <div style={{ width: 12, height: 12, border: "2px solid " + C.dim, borderTop: "2px solid " + TEAL, borderRadius: "50%", animation: "spin 0.7s linear infinite", flexShrink: 0 }} />}
+            {query && <button onClick={() => { setQuery(""); setShowPreemptive(true); setOpen(true); }} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>}
+          </div>
+
+          {/* Dropdown */}
+          {open && (
+            <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#070e1a", border: "1px solid " + C.border, borderTop: "2px solid " + TEAL, borderRadius: "0 0 10px 10px", zIndex: 9999, boxShadow: "0 16px 48px rgba(0,0,0,0.9)", maxHeight: 320, overflowY: "auto" }}>
+              <div style={{ padding: "0.3rem 0.75rem", borderBottom: "1px solid " + C.border, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                {showPreemptive
+                  ? <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <span style={{ width: 5, height: 5, borderRadius: "50%", background: TEAL, display: "inline-block", animation: "blink 1.4s ease-in-out infinite" }} />
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: TEAL, letterSpacing: "0.12em" }}>TRENDING POLITICIANS</span>
+                    </div>
+                  : <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.dim }}>{displayList.length} results</span>
+                }
+                <button onClick={() => setOpen(false)} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>
+              </div>
+              {displayList.map((p, i) => {
+                const pc = pdc(p.party);
+                return (
+                  <div key={i} onMouseDown={() => { selectOfficial(p); setOpen(false); setQuery(p.name); }}
+                    style={{ padding: "0.55rem 0.75rem", borderBottom: "1px solid " + C.border + "33", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.6rem", transition: "background 0.1s" }}
+                    onMouseEnter={e => e.currentTarget.style.background = C.panelHi}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                    <div style={{ width: 4, height: 36, background: pc, borderRadius: 2, flexShrink: 0 }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.9rem", color: C.cream, letterSpacing: "0.04em" }}>{p.name}</span>
+                        <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.55rem", color: pc, background: pc + "18", border: "1px solid " + pc + "33", padding: "0 0.3rem", borderRadius: 4 }}>{p.party}</span>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.36rem", color: statusColor(p.status), border: "1px solid " + statusColor(p.status) + "44", padding: "0 0.28rem", borderRadius: 4 }}>{p.status}</span>
+                      </div>
+                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.dim }}>{p.state} · {p.chamber}</div>
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{ padding: "0.25rem 0.75rem", borderTop: "1px solid " + C.border }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.34rem", color: C.dim }}>Enter to search · Esc to close · Sources: Congress.gov + FEC</span>
+              </div>
+            </div>
+          )}
         </div>
         {error && <div style={{ marginTop: "0.5rem", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", color: C.gold }}>{error}</div>}
       </div>
 
-      {/* Two-pane: results list + detail */}
-      <div style={{ display: "grid", gridTemplateColumns: results.length ? "240px 1fr" : "1fr", gap: "0.75rem" }}>
+      {/* Results + Detail */}
+      <div style={{ display: "grid", gridTemplateColumns: results.length ? "220px 1fr" : "1fr", gap: "0.75rem" }}>
 
-        {/* Results list */}
         {results.length > 0 && (
-          <div style={{ background: C.panel, border: "1px solid " + C.border, maxHeight: 500, overflowY: "auto" }}>
-            <div style={{ padding: "0.4rem 0.7rem", borderBottom: "1px solid " + C.navy, position: "sticky", top: 0, background: C.panel }}>
-              <MN color={C.dim} size="0.42rem" spacing="0.1em">{results.length} OFFICIALS</MN>
+          <div style={{ background: C.panel, border: "1px solid " + C.border, borderRadius: 10, maxHeight: 500, overflowY: "auto", boxShadow: SHADOW.card }}>
+            <div style={{ padding: "0.4rem 0.7rem", borderBottom: "1px solid " + C.border, position: "sticky", top: 0, background: C.panel, borderRadius: "10px 10px 0 0" }}>
+              <MN color={C.dim} size="0.42rem" spacing="0.1em">{results.length} OFFICIALS FOUND</MN>
             </div>
             {results.map((off, i) => {
-              const isA = selected?.id === off.id;
-              const pc = partyDotColor(off.party);
+              const isA = selected?.id === off.id, pc = pdc(off.party);
               return (
-                <div key={i} onClick={() => selectOfficial(off)} style={{ padding: "0.6rem 0.7rem", borderBottom: "1px solid " + C.navy + "55", borderLeft: "3px solid " + (isA ? pc : "transparent"), background: isA ? C.panelHi : "transparent", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: pc, flexShrink: 0 }} />
+                <div key={i} onClick={() => selectOfficial(off)} style={{ padding: "0.6rem 0.7rem", borderBottom: "1px solid " + C.border + "55", borderLeft: "3px solid " + (isA ? pc : "transparent"), background: isA ? C.panelHi : "transparent", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem", transition: "all 0.15s" }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: pc, flexShrink: 0, boxShadow: isA ? "0 0 8px " + pc : "none" }} />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: isA ? C.cream : C.muted, letterSpacing: "0.04em", lineHeight: 1.1 }}>{off.name}</div>
-                    <MN color={C.dim} size="0.4rem">{off.party} · {off.state} · {off.chamber}</MN>
+                    <MN color={C.dim} size="0.38rem">{off.party} · {off.state} · {off.chamber}</MN>
                   </div>
                 </div>
               );
@@ -1807,119 +2006,87 @@ function OfficialsDB() {
           </div>
         )}
 
-        {/* Detail pane */}
         {selected && (
-          <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid #0E7490", padding: "1.1rem 1.3rem" }}>
-
-            {/* Header */}
+          <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + TEAL, borderRadius: 12, padding: "1.1rem 1.3rem", boxShadow: SHADOW.bias(TEAL) }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap" }}>
-              {selected.imageUrl && <img src={selected.imageUrl} alt="" style={{ width: 56, height: 70, objectFit: "cover", border: "1px solid " + C.navy }} />}
+              {selected.imageUrl && <img src={selected.imageUrl} alt="" style={{ width: 56, height: 70, objectFit: "cover", border: "1px solid " + C.border, borderRadius: 6 }} />}
               <div style={{ flex: 1 }}>
                 <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.5rem", color: C.cream, letterSpacing: "0.04em", lineHeight: 1 }}>{selected.name}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.35rem", flexWrap: "wrap" }}>
-                  <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.62rem", color: partyDotColor(selected.party), background: partyDotColor(selected.party) + "18", border: "1px solid " + partyDotColor(selected.party) + "44", padding: "0 0.35rem", letterSpacing: "0.08em" }}>{selected.party}</span>
-                  <MN color={C.dim} size="0.44rem">{selected.state} · {selected.chamber}{selected.district != null ? " · District " + selected.district : ""}</MN>
-                  <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.6rem", color: "#2E8B57", border: "1px solid #2E8B5744", padding: "0 0.35rem", letterSpacing: "0.08em" }}>{selected.status}</span>
+                  <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.62rem", color: pdc(selected.party), background: pdc(selected.party) + "18", border: "1px solid " + pdc(selected.party) + "44", padding: "0 0.35rem", borderRadius: 5, letterSpacing: "0.08em" }}>{selected.party}</span>
+                  <MN color={C.dim} size="0.44rem">{selected.state} · {selected.chamber}</MN>
+                  <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.6rem", color: statusColor(selected.status), border: "1px solid " + statusColor(selected.status) + "44", padding: "0 0.35rem", borderRadius: 5 }}>{selected.status || "Active"}</span>
                 </div>
               </div>
-
-              {/* Summary/Detailed toggle */}
               {stances && (
-                <div style={{ display: "flex", border: "1px solid " + C.navy }}>
-                  {["summary", "detailed"].map(v => (
-                    <button key={v} onClick={() => setView(v)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", letterSpacing: "0.1em", padding: "0.25rem 0.6rem", background: view === v ? "#0E7490" : "transparent", color: view === v ? C.cream : C.dim, border: "none", cursor: "pointer", textTransform: "uppercase" }}>{v}</button>
-                  ))}
+                <div style={{ display: "flex", border: "1px solid " + C.border, borderRadius: 8, overflow: "hidden" }}>
+                  {["summary", "detailed"].map(v => <button key={v} onClick={() => setView(v)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", letterSpacing: "0.1em", padding: "0.25rem 0.6rem", background: view === v ? TEAL : "transparent", color: view === v ? C.cream : C.dim, border: "none", cursor: "pointer", textTransform: "uppercase" }}>{v}</button>)}
                 </div>
               )}
             </div>
 
-            {/* Loading */}
-            {loadingDetail && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem", gap: "0.6rem" }}>
-                <div style={{ width: 28, height: 28, border: "3px solid " + C.navy, borderTop: "3px solid #0E7490", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-                <MN color={C.dim} size="0.46rem">Pulling record & synthesizing stances...</MN>
-              </div>
-            )}
+            {loadingDetail && <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem", gap: "0.6rem" }}>
+              <div style={{ width: 28, height: 28, border: "3px solid " + C.border, borderTop: "3px solid " + TEAL, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+              <MN color={C.dim} size="0.46rem">Pulling record and synthesizing stances...</MN>
+            </div>}
 
-            {/* Stances */}
-            {stances && !loadingDetail && (
-              <>
-                {/* Ideology bar */}
-                <div style={{ marginBottom: "1rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.3rem" }}>
-                    <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.95rem", color: leanColor(stances.ideologyScore), letterSpacing: "0.06em" }}>{stances.ideology}</div>
-                    <MN color={C.dim} size="0.42rem">{stances.ideologyScore}/100</MN>
-                  </div>
-                  <div style={{ position: "relative", height: 7, background: "linear-gradient(90deg," + DEM + "," + IND + "," + REP + ")", borderRadius: 4 }}>
-                    <div style={{ position: "absolute", top: "50%", left: stances.ideologyScore + "%", transform: "translate(-50%,-50%)", width: 14, height: 14, borderRadius: "50%", background: leanColor(stances.ideologyScore), border: "2.5px solid " + C.bg, boxShadow: "0 0 8px " + leanColor(stances.ideologyScore) }} />
-                  </div>
+            {stances && !loadingDetail && <>
+              <div style={{ marginBottom: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.3rem" }}>
+                  <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.95rem", color: lc(stances.ideologyScore), letterSpacing: "0.06em" }}>{stances.ideology}</div>
+                  <MN color={C.dim} size="0.42rem">{stances.ideologyScore}/100</MN>
                 </div>
+                <div style={{ position: "relative", height: 7, background: "linear-gradient(90deg," + DEM + "," + IND + "," + REP + ")", borderRadius: 4 }}>
+                  <div style={{ position: "absolute", top: "50%", left: stances.ideologyScore + "%", transform: "translate(-50%,-50%)", width: 14, height: 14, borderRadius: "50%", background: lc(stances.ideologyScore), border: "2.5px solid " + C.bg, boxShadow: "0 0 8px " + lc(stances.ideologyScore) }} />
+                </div>
+              </div>
 
-                {view === "summary" ? (
-                  <>
-                    {/* Summary view */}
-                    <div style={{ background: C.bg, border: "1px solid " + C.border, borderLeft: "3px solid #0E7490", padding: "0.9rem 1rem", marginBottom: "0.75rem" }}>
-                      <div style={{ fontFamily: "'Georgia', serif", fontSize: "0.92rem", color: C.cream, lineHeight: 1.75 }}>{stances.summary}</div>
-                    </div>
-                    <SL accent="#0E7490">Top Issues</SL>
-                    <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-                      {(stances.topIssues || []).map((iss, i) => (
-                        <span key={i} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.gold, background: C.gold + "12", border: "1px solid " + C.gold + "44", padding: "0.2rem 0.6rem", letterSpacing: "0.06em" }}>{iss}</span>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* Detailed view — issue by issue */}
-                    <SL accent="#0E7490">Platform Stances</SL>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
-                      {(stances.stances || []).map((st, i) => (
-                        <div key={i} style={{ background: C.bg, border: "1px solid " + C.border, borderLeft: "3px solid " + leanChar(st.lean), padding: "0.65rem 0.85rem" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-                            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.88rem", color: C.cream, letterSpacing: "0.06em" }}>{st.issue}</div>
-                            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: st.confidence === "Documented" ? "#2E8B57" : C.gold, border: "1px solid " + (st.confidence === "Documented" ? "#2E8B57" : C.gold) + "44", padding: "0.05rem 0.3rem", letterSpacing: "0.06em" }}>{st.confidence}</span>
-                          </div>
-                          <div style={{ fontFamily: "'Georgia', serif", fontSize: "0.82rem", color: C.muted, lineHeight: 1.6 }}>{st.position}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
+              {view === "summary" ? <>
+                <div style={{ background: C.bg, border: "1px solid " + C.border, borderLeft: "3px solid " + TEAL, borderRadius: "0 8px 8px 0", padding: "0.9rem 1rem", marginBottom: "0.75rem", boxShadow: SHADOW.bias(TEAL) }}>
+                  <div style={{ fontFamily: "'Georgia', serif", fontSize: "0.92rem", color: C.cream, lineHeight: 1.75 }}>{stances.summary}</div>
+                </div>
+                <SL accent={TEAL}>Top Issues</SL>
+                <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+                  {(stances.topIssues || []).map((iss, i) => <span key={i} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.gold, background: C.gold + "12", border: "1px solid " + C.gold + "44", padding: "0.2rem 0.6rem", borderRadius: 6, letterSpacing: "0.06em", boxShadow: SHADOW.glow(C.gold) }}>{iss}</span>)}
+                </div>
+              </> : <>
+                <SL accent={TEAL}>Platform Stances</SL>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+                  {(stances.stances || []).map((st, i) => {
+                    const sc = st.lean === "L" ? DEM : st.lean === "R" ? REP : IND;
+                    return <div key={i} style={{ background: C.bg, border: "1px solid " + C.border, borderLeft: "3px solid " + sc, borderRadius: "0 8px 8px 0", padding: "0.65rem 0.85rem", boxShadow: SHADOW.bias(sc) }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                        <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.88rem", color: C.cream, letterSpacing: "0.06em" }}>{st.issue}</div>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: st.confidence === "Documented" ? "#22c55e" : C.gold, border: "1px solid currentColor", padding: "0.05rem 0.3rem", borderRadius: 4 }}>{st.confidence}</span>
+                      </div>
+                      <div style={{ fontFamily: "'Georgia', serif", fontSize: "0.82rem", color: C.muted, lineHeight: 1.6 }}>{st.position}</div>
+                    </div>;
+                  })}
+                </div>
+              </>}
 
-                {/* Sponsored legislation */}
-                {detail?.sponsored?.length > 0 && (
-                  <div style={{ marginTop: "1rem" }}>
-                    <SL accent={C.gold}>Recent Sponsored Bills ({detail.sponsored.length})</SL>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem", maxHeight: 140, overflowY: "auto" }}>
-                      {detail.sponsored.slice(0, 8).map((b, i) => (
-                        <div key={i} style={{ display: "flex", gap: "0.5rem", padding: "0.35rem 0.5rem", background: C.bg, border: "1px solid " + C.navy + "55" }}>
-                          <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.62rem", color: C.gold, flexShrink: 0 }}>{b.type} {b.number}</span>
-                          <span style={{ fontFamily: "'Georgia', serif", fontSize: "0.72rem", color: C.muted, lineHeight: 1.4 }}>{(b.title || "").slice(0, 80)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              {detail?.sponsored?.length > 0 && <div style={{ marginTop: "1rem" }}>
+                <SL accent={C.gold}>Recent Sponsored Bills</SL>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem", maxHeight: 140, overflowY: "auto" }}>
+                  {detail.sponsored.slice(0, 8).map((b, i) => <div key={i} style={{ display: "flex", gap: "0.5rem", padding: "0.35rem 0.5rem", background: C.bg, border: "1px solid " + C.border + "55", borderRadius: 6 }}>
+                    <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.62rem", color: C.gold, flexShrink: 0 }}>{b.type} {b.number}</span>
+                    <span style={{ fontFamily: "'Georgia', serif", fontSize: "0.72rem", color: C.muted, lineHeight: 1.4 }}>{(b.title || "").slice(0, 80)}</span>
+                  </div>)}
+                </div>
+              </div>}
 
-                {/* Data reliability note */}
-                {stances.dataNote && (
-                  <div style={{ marginTop: "0.85rem", borderTop: "1px solid " + C.navy, paddingTop: "0.6rem", fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.74rem", color: C.dim, lineHeight: 1.5 }}>
-                    ⚠ {stances.dataNote}
-                  </div>
-                )}
-              </>
-            )}
+              {stances.dataNote && <div style={{ marginTop: "0.85rem", borderTop: "1px solid " + C.border, paddingTop: "0.6rem", fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.74rem", color: C.dim, lineHeight: 1.5 }}>⚠ {stances.dataNote}</div>}
+            </>}
           </div>
         )}
 
-        {/* Empty state */}
-        {!results.length && !searching && (
-          <div style={{ border: "1px dashed " + C.navy, padding: "2.5rem 1rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.6rem" }}>
-            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.5rem", color: C.dim, letterSpacing: "0.08em", textAlign: "center" }}>Officials Database</div>
-            <MN color={C.dim} size="0.46rem">Search federal lawmakers by name, state, issue, or status</MN>
+        {!results.length && !searching && !selected && (
+          <div style={{ border: "1px dashed " + C.border, borderRadius: 10, padding: "2.5rem 1rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.6rem" }}>
+            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.4rem", color: C.dim, letterSpacing: "0.08em", textAlign: "center" }}>Officials Database</div>
+            <MN color={C.dim} size="0.46rem">Current · Historical · Running — federal level</MN>
             <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", justifyContent: "center", marginTop: "0.4rem" }}>
-              {["Warren", "Cruz", "Sanders", "Rubio"].map(n => (
-                <button key={n} onClick={() => { setQuery(n); setTimeout(runSearch, 50); }} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", color: "#0E7490", border: "1px solid #0E749066", padding: "0.2rem 0.5rem", background: "transparent", cursor: "pointer" }}>{n}</button>
+              {["Warren", "Cruz", "Sanders", "Obama"].map(n => (
+                <button key={n} onClick={() => { setQuery(n); runSearch(n); }} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", color: "#0E7490", border: "1px solid #0E749066", padding: "0.2rem 0.5rem", background: "transparent", cursor: "pointer", borderRadius: 6 }}>{n}</button>
               ))}
             </div>
           </div>
@@ -1929,7 +2096,7 @@ function OfficialsDB() {
   );
 }
 
-// ── ROOT ──────────────────────────────────────────────────────
+
 export default function App() {
   const [tab, setTab] = useState("brief");
   const [mounted, setMounted] = useState(true);
@@ -2031,6 +2198,7 @@ export default function App() {
     pulse:     wrap("pulse",     <ReaderPulse bill={bill} />),
     lede:      wrap("lede",      <BuriedLede bill={bill} />),
     officials: wrap("officials", <OfficialsDB />),
+    cards:     wrap("cards",     <CardGenerator />),
   };
 
   return (
@@ -2047,6 +2215,7 @@ export default function App() {
         ::-webkit-scrollbar-track{background:#0a0f1e}
         ::-webkit-scrollbar-thumb{background:#1b2d5c}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
         @keyframes pulseGlow{0%,100%{box-shadow:0 0 6px rgba(255,255,255,0.8)}50%{box-shadow:0 0 12px rgba(255,255,255,1)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         input::placeholder{color:#2a3d6e}
@@ -2113,80 +2282,28 @@ export default function App() {
         </div>
 
         {/* ── Scroll banner tabs — minimizable ── */}
-        <div style={{ flexShrink: 0, background: C.header, borderBottom: "3px solid " + activeNav.color, transition: "all 0.3s ease" }}>
-
-          {/* Collapsed mini-bar — always visible */}
-          <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", height: 32, gap: "0.75rem" }}>
-
-            {/* Toggle button */}
-            <button
-              onClick={() => setTabsOpen(o => !o)}
-              style={{
-                fontFamily: "'JetBrains Mono', monospace", fontSize: "0.48rem",
-                color: tabsOpen ? C.muted : activeNav.color,
-                background: "transparent", border: "none", cursor: "pointer",
-                display: "flex", alignItems: "center", gap: "0.35rem",
-                letterSpacing: "0.06em", flexShrink: 0, padding: "0.2rem 0",
-                transition: "color 0.2s",
-              }}
-            >
-              <span style={{ fontSize: "0.65rem", transition: "transform 0.3s ease", display: "inline-block", transform: tabsOpen ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
-              {tabsOpen ? "COLLAPSE" : "SECTIONS"}
-            </button>
-
-            {/* Divider */}
-            <div style={{ width: 1, height: 14, background: C.navy, flexShrink: 0 }} />
-
-            {/* Active section pill — always visible */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: activeNav.color, flexShrink: 0 }} />
-              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: C.cream, letterSpacing: "0.1em" }}>{activeNav.label}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.dim, letterSpacing: "0.06em" }}>{activeNav.sub}</div>
-            </div>
-
-            {/* Quick-jump dots — collapsed state only */}
-            {!tabsOpen && (
-              <div style={{ marginLeft: "auto", display: "flex", gap: "0.3rem", alignItems: "center" }}>
-                {NAV.map(n => (
-                  <button
-                    key={n.id}
-                    onClick={() => handleTab(n.id)}
-                    title={n.label}
-                    style={{
-                      width: tab === n.id ? 16 : 8,
-                      height: 8,
-                      borderRadius: 4,
-                      background: tab === n.id ? n.color : C.dimmer,
-                      border: "none", cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      padding: 0,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Section count */}
-            <div style={{ marginLeft: tabsOpen ? "auto" : 0, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.36rem", color: C.dim }}>
-              {activeNav.num} / 08
-            </div>
-          </div>
-
-          {/* Expandable scroll tab row */}
-          <div style={{
-            maxHeight: tabsOpen ? 120 : 0,
-            overflow: tabsOpen ? "visible" : "hidden",
-            transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)",
-          }}>
-            <div className="tab-row" style={{ padding: "0 1rem 0", overflowX: "auto", overflowY: "visible", WebkitOverflowScrolling: "touch" }}>
-              <div style={{ display: "flex", gap: "6px", alignItems: "flex-start", paddingTop: "8px", minWidth: "max-content" }}>
-                {NAV.map(n => <ScrollBannerTab key={n.id} tab={n} isActive={tab === n.id} onClick={() => handleTab(n.id)} />)}
-              </div>
-            </div>
-          </div>
+        <div style={{ flexShrink: 0, background: C.header, borderBottom: "1px solid " + C.navy, padding: "0.55rem 1rem", display: "flex", gap: "0.4rem", overflowX: "auto" }}>
+          {NAV.map(n => {
+            const isA = tab === n.id;
+            return (
+              <button key={n.id} onClick={() => handleTab(n.id)} style={{
+                padding: "0.42rem 0.95rem", flexShrink: 0, whiteSpace: "nowrap",
+                background: isA ? n.color : C.panel,
+                color: isA ? C.cream : C.dim,
+                border: "1px solid " + (isA ? n.color : C.border),
+                borderRadius: 8,
+                fontFamily: "'Bebas Neue', Impact, sans-serif",
+                fontSize: "0.8rem", letterSpacing: "0.1em",
+                transition: "all 0.15s",
+                boxShadow: isA ? SHADOW.pill(n.color) : "none",
+              }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.28rem", color: isA ? "rgba(255,255,255,0.45)" : C.dim, marginRight: "0.3rem" }}>{n.num}</span>
+                {n.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* ── Content ── */}
         <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.4rem", opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-6px)", transition: "opacity 0.2s ease, transform 0.2s ease" }}>
           {loading
             ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60%", gap: "0.75rem" }}>
