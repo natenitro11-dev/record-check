@@ -511,7 +511,7 @@ function BillSearchBox({ onSelect }) {
           style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.54rem", letterSpacing: "0.03em", outline: "none" }} />
         {searching
           ? <div style={{ width: 11, height: 11, border: "2px solid " + C.navy, borderTop: "2px solid " + C.gold, borderRadius: "50%", animation: "spin 0.7s linear infinite", flexShrink: 0 }} />
-          : query ? <button onClick={() => { setQuery(""); setResults([]); inputRef.current?.focus(); }} style={{ fontSize: "0.5rem", color: C.dim, cursor: "pointer", padding: "0 0.1rem" }}>✕</button> : null}
+          : query ? <button onClick={() => { setQuery(""); setResults([]); inputRef.current?.focus(); }} style={{ fontSize: "0.5rem", color: C.dim, cursor: "pointer", padding: "0 0.1rem" }}>&#10005;</button> : null}
       </div>
 
       {open && (
@@ -576,10 +576,10 @@ function BillSearchBox({ onSelect }) {
 }
 
 const OUTLETS = [
-  { name: "New York Times", url: "https://www.nytimes.com", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "§ 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
-  { name: "Wall Street Journal", url: "https://www.wsj.com", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "§ 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
-  { name: "NPR", url: "https://www.npr.org", lean: 33, tone: "neutral", coverage: 94, date: "Mar 20, 2025", headline: "Kids Online Safety Act — What It Actually Does", angle: "Explanatory and balanced. Best overall coverage of actual provisions.", billSection: "§ 4(b)(2) — Parental Tools", billText: "A covered platform shall provide a minor user's parent or legal guardian with tools to: (A) supervise the minor's use of platform features; (B) limit the time a minor may spend using the platform; (C) restrict the minor's ability to make in-application purchases; and (D) access a summary of the content categories to which the minor has been exposed during the preceding 30 days.", keywords: ["parent or legal guardian", "limit the time", "in-application purchases", "content categories"] },
-  { name: "Fox News", url: "https://www.foxnews.com", lean: 84, tone: "negative", coverage: 44, date: "Mar 22, 2025", headline: "Democrat-Led Bill Could Give Feds Power to Police Teen Internet Use", angle: "Partisan framing leads. Minimal bill substance. Censorship angle dominant.", billSection: "§ 7(a) — FTC Enforcement", billText: "The Federal Trade Commission shall enforce this Act in the same manner, by the same means, and with the same jurisdiction, powers, and duties as though all applicable terms of the Federal Trade Commission Act were incorporated into and made a part of this Act. Any covered platform that violates this Act shall be subject to civil penalties not to exceed $50,000 per violation per day.", keywords: ["Federal Trade Commission shall enforce", "civil penalties", "$50,000 per violation per day"] },
+  { name: "New York Times", url: "https://www.nytimes.com", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "&#167; 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
+  { name: "Wall Street Journal", url: "https://www.wsj.com", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "&#167; 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
+  { name: "NPR", url: "https://www.npr.org", lean: 33, tone: "neutral", coverage: 94, date: "Mar 20, 2025", headline: "Kids Online Safety Act — What It Actually Does", angle: "Explanatory and balanced. Best overall coverage of actual provisions.", billSection: "&#167; 4(b)(2) — Parental Tools", billText: "A covered platform shall provide a minor user's parent or legal guardian with tools to: (A) supervise the minor's use of platform features; (B) limit the time a minor may spend using the platform; (C) restrict the minor's ability to make in-application purchases; and (D) access a summary of the content categories to which the minor has been exposed during the preceding 30 days.", keywords: ["parent or legal guardian", "limit the time", "in-application purchases", "content categories"] },
+  { name: "Fox News", url: "https://www.foxnews.com", lean: 84, tone: "negative", coverage: 44, date: "Mar 22, 2025", headline: "Democrat-Led Bill Could Give Feds Power to Police Teen Internet Use", angle: "Partisan framing leads. Minimal bill substance. Censorship angle dominant.", billSection: "&#167; 7(a) — FTC Enforcement", billText: "The Federal Trade Commission shall enforce this Act in the same manner, by the same means, and with the same jurisdiction, powers, and duties as though all applicable terms of the Federal Trade Commission Act were incorporated into and made a part of this Act. Any covered platform that violates this Act shall be subject to civil penalties not to exceed $50,000 per violation per day.", keywords: ["Federal Trade Commission shall enforce", "civil penalties", "$50,000 per violation per day"] },
 ];
 const TIMELINE = [
   { month: "Aug '23", event: "Bill Introduced", coverage: 12, tone: "neutral" },
@@ -904,7 +904,7 @@ function OutletExpandedCard({ outlet, showText }) {
       {outlet.url
         ? <a href={outlet.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
             <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, lineHeight: 1.2, marginBottom: "0.5rem", letterSpacing: "0.02em" }}>
-              {outlet.headline} <span style={{ fontSize: "0.5rem", opacity: 0.5 }}>↗</span>
+              {outlet.headline} <span style={{ fontSize: "0.5rem", opacity: 0.5 }}>&#8599;</span>
             </div>
           </a>
         : <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, lineHeight: 1.2, marginBottom: "0.5rem", letterSpacing: "0.02em" }}>{outlet.headline}</div>
@@ -995,10 +995,10 @@ function BillBrief({ bill, loading }) {
 // ── Source Selector ────────────────────────────────────────────
 // Shows at the top of media-facing tabs, lets user pick data source
 const SOURCES = [
-  { id: "demo",    label: "Demo Data",        icon: "◈", color: C.gold,    desc: "Hardcoded KOSA example data" },
-  { id: "gdelt",   label: "GDELT",            icon: "◉", color: "#4A8FA8", desc: "Live global news coverage index" },
-  { id: "archive", label: "Internet Archive", icon: "◷", color: "#7B5EA7", desc: "Archived articles & documents" },
-  { id: "cc",      label: "CommonCrawl",      icon: "§",  color: "#2E8B57", desc: "Deep historical web crawl" },
+  { id: "demo",    label: "Demo Data",        icon: "&#9672;", color: C.gold,    desc: "Hardcoded KOSA example data" },
+  { id: "gdelt",   label: "GDELT",            icon: "&#9673;", color: "#4A8FA8", desc: "Live global news coverage index" },
+  { id: "archive", label: "Internet Archive", icon: "&#9719;", color: "#7B5EA7", desc: "Archived articles & documents" },
+  { id: "cc",      label: "CommonCrawl",      icon: "&#167;",  color: "#2E8B57", desc: "Deep historical web crawl" },
 ];
 
 function SourceSelector({ active, onSelect, loading, error }) {
@@ -1095,9 +1095,9 @@ function BillLanguage({ bill }) {
       {fullscreen !== null && (
         <div style={{ position: "fixed", inset: 0, background: C.bg, zIndex: 9999, display: "flex", flexDirection: "column", animation: "slideDown 0.2s ease" }}>
           {/* Header */}
-          <div style={{ background: C.surface, borderBottom: "1px solid " + C.border, padding: "0.75rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
+          <div style={{ background: C.header, borderBottom: "1px solid " + C.border, padding: "0.75rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
             <button onClick={() => setFullscreen(null)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.muted, background: C.panel, border: "1px solid " + C.border, borderRadius: 8, padding: "0.3rem 0.7rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              ← Back
+              &larr; Back
             </button>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.95rem", color: C.cream, letterSpacing: "0.04em" }}>{OUTLETS[fullscreen]?.name}</div>
@@ -1109,12 +1109,12 @@ function BillLanguage({ bill }) {
           </div>
 
           {/* Keyword search */}
-          <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid " + C.border, background: C.surface, flexShrink: 0 }}>
+          <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid " + C.border, background: C.header, flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: 8, height: 34, padding: "0 0.65rem", gap: "0.4rem" }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — type any keyword or section number..."
                 style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
-              {keyword && <button onClick={() => setKeyword("")} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>}
+              {keyword && <button onClick={() => setKeyword("")} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>&#10005;</button>}
             </div>
           </div>
 
@@ -1162,7 +1162,7 @@ function BillLanguage({ bill }) {
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — keyword or section..."
             style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
-          {keyword && <button onClick={() => setKeyword("")} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>}
+          {keyword && <button onClick={() => setKeyword("")} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>&#10005;</button>}
         </div>
 
         <div>
@@ -1939,7 +1939,7 @@ function OfficialsDB() {
               placeholder={mode === "name" ? "Search politicians — tap to see trending..." : mode === "district" ? "State — CA, TX, NY..." : mode === "issue" ? "Issue — healthcare, climate..." : "Status — active, running, former..."}
               style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.52rem", outline: "none" }} />
             {searching && <div style={{ width: 12, height: 12, border: "2px solid " + C.dim, borderTop: "2px solid " + TEAL, borderRadius: "50%", animation: "spin 0.7s linear infinite", flexShrink: 0 }} />}
-            {query && <button onClick={() => { setQuery(""); setShowPreemptive(true); setOpen(true); }} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>}
+            {query && <button onClick={() => { setQuery(""); setShowPreemptive(true); setOpen(true); }} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>&#10005;</button>}
           </div>
 
           {/* Dropdown */}
@@ -1953,7 +1953,7 @@ function OfficialsDB() {
                     </div>
                   : <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.38rem", color: C.dim }}>{displayList.length} results</span>
                 }
-                <button onClick={() => setOpen(false)} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>✕</button>
+                <button onClick={() => setOpen(false)} style={{ color: C.dim, fontSize: "0.5rem", background: "none" }}>&#10005;</button>
               </div>
               {displayList.map((p, i) => {
                 const pc = pdc(p.party);
@@ -2075,7 +2075,7 @@ function OfficialsDB() {
                 </div>
               </div>}
 
-              {stances.dataNote && <div style={{ marginTop: "0.85rem", borderTop: "1px solid " + C.border, paddingTop: "0.6rem", fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.74rem", color: C.dim, lineHeight: 1.5 }}>⚠ {stances.dataNote}</div>}
+              {stances.dataNote && <div style={{ marginTop: "0.85rem", borderTop: "1px solid " + C.border, paddingTop: "0.6rem", fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.74rem", color: C.dim, lineHeight: 1.5 }}>&#9888; {stances.dataNote}</div>}
             </>}
           </div>
         )}
@@ -2096,6 +2096,14 @@ function OfficialsDB() {
   );
 }
 
+
+function CardGenerator() {
+  return (
+    <div style={{ padding: "2rem", fontFamily: "JetBrains Mono, monospace", color: "#7a8fa8" }}>
+      Commentary Studio card generator — coming soon.
+    </div>
+  );
+}
 
 export default function App() {
   const [tab, setTab] = useState("brief");
