@@ -1,5 +1,6 @@
 import "./index.css";
 import { useState, useEffect, useRef, Component } from "react";
+import CompareView from "./CompareTimeline.jsx";
 
 // ── DEPLOYMENT NOTE ────────────────────────────────────────────
 // MODE: Artifact / Browser preview  →  uses public CORS proxies
@@ -56,10 +57,19 @@ const rateLimiter = (() => {
       const now = Date.now();
       while (calls.length && now - calls[0] > WINDOW) calls.shift();
       if (calls.length >= MAX) {
-        const wait = Math.ceil((WINDOW - (now - calls[0])) / 1000);
-        throw new Error("Too many requests. Wait " + wait + "s and try again.");
+        const readyAt = calls[0] + WINDOW;
+        const wait = Math.ceil((readyAt - now) / 1000);
+        const err = new Error("Too many requests. Wait " + wait + "s and try again.");
+        err.retryAfter = readyAt;
+        throw err;
       }
       calls.push(now);
+    },
+    cooldownRemaining() {
+      const now = Date.now();
+      while (calls.length && now - calls[0] > WINDOW) calls.shift();
+      if (calls.length < MAX) return 0;
+      return Math.max(0, Math.ceil((calls[0] + WINDOW - now) / 1000));
     }
   };
 })();
@@ -82,7 +92,7 @@ class ErrorBoundary extends Component {
           </div>
           <button
             onClick={() => this.setState({ error: null })}
-            style={{ fontFamily: "'Bebas Neue',Impact,sans-serif", fontSize: "0.8rem", letterSpacing: "0.12em", color: "#070f1a", background: color, border: "none", padding: "0.5rem 1.25rem", cursor: "pointer" }}
+            style={{ fontFamily: "'Bebas Neue',Impact,sans-serif", fontSize: "0.8rem", letterSpacing: "0.12em", color: "#0a0a0c", background: color, border: "none", padding: "0.5rem 1.25rem", cursor: "pointer" }}
           >
             TRY AGAIN
           </button>
@@ -96,7 +106,7 @@ class ErrorBoundary extends Component {
 // Parse user query into congress number + bill type + number
 // e.g. "S. 4638", "HR 1", "H.R. 7521", "s4638", "hr1"
 function parseQuery(q) {
-  const clean = q.trim().toUpperCase().replace(/[\.\s]/g, "");
+  const clean = q.trim().toUpperCase().replace(/[.\s_-]/g, "");
   const match = clean.match(/^(HR|HJRES|SRES|SJRES|S)(\d+)$/);
   if (!match) return null;
   const typeMap = { HR: "hr", HJRES: "hjres", SRES: "sres", SJRES: "sjres", S: "s" };
@@ -105,7 +115,13 @@ function parseQuery(q) {
 
 // Fetch bill from Congress.gov — tries recent congresses
 async function fetchBill(query, congress = 119) {
-  const parsed = parseQuery(query);
+  let parsed;
+  if (query && typeof query === "object" && query.number) {
+    parsed = { type: (query.type || "").toLowerCase(), number: String(query.number) };
+    if (query.congress) congress = query.congress;
+  } else {
+    parsed = parseQuery(query);
+  }
   if (!parsed) throw new Error("Could not parse bill number. Try formats like 'S 4638' or 'HR 1'.");
   rateLimiter.check();
   const url = CONGRESS_BASE + "/bill/" + congress + "/" + parsed.type + "/" + parsed.number + "?api_key=" + CONGRESS_KEY;
@@ -235,7 +251,7 @@ async function fetchGDELT(billName) {
         latestHeadline: o.articles[0]?.title || "",
         latestDate: o.articles[0]?.seendate?.slice(0, 8) || "",
         url: o.articles[0]?.url || "",
-        lean: 50,
+        lean: leanScore(biasOf(o.name)),
         tone: "neutral",
       })),
       timeline: buildTimeline(articles),
@@ -419,6 +435,9 @@ const DEM = "#2563EB";
 const REP = "#DC2626";
 const IND = "#6B7280";
 
+function leanScore(bias) {
+  return { left:12, "lean-left":30, center:50, "lean-right":65, right:88, unrated:50 }[bias] ?? 50;
+}
 function partisanColor(score) {
   if (score <= 35) return DEM;
   if (score <= 55) return IND;
@@ -489,7 +508,7 @@ function BillSearchBox({ onSelect }) {
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  const select = item => { setQuery(item.id); setOpen(false); onSelect(item.id); };
+  const select = item => { setQuery(item.id); setOpen(false); onSelect(item); };
 
   const handleKey = e => {
     if (!open || displayResults.length === 0) { if (e.key === "Enter") { onSelect(query); setOpen(false); } return; }
@@ -501,7 +520,7 @@ function BillSearchBox({ onSelect }) {
 
   return (
     <div ref={wrapRef} style={{ flex: 1, maxWidth: 560, position: "relative" }}>
-      <div style={{ display: "flex", alignItems: "center", background: "#0a1525", border: "1px solid " + (open ? C.gold + "88" : C.navy), height: 34, padding: "0 0.65rem", transition: "border-color 0.15s" }}>
+      <div style={{ display: "flex", alignItems: "center", background: "#1f1f24", border: "1px solid " + (open ? C.red + "88" : C.border), borderRadius: 999, height: 34, padding: "0 0.65rem", transition: "border-color 0.15s" }}>
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, marginRight: "0.45rem" }}>
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
@@ -515,7 +534,7 @@ function BillSearchBox({ onSelect }) {
       </div>
 
       {open && (
-        <div style={{ position: "absolute", top: "calc(100% + 2px)", left: 0, right: 0, background: "#070e1a", border: "1px solid " + C.navy, borderTop: "2px solid " + C.gold, zIndex: 9999, boxShadow: "0 16px 48px rgba(0,0,0,0.9)", maxHeight: 400, overflowY: "auto" }}>
+        <div style={{ position: "absolute", top: "calc(100% + 2px)", left: 0, right: 0, background: "#0a0a0c", border: "1px solid " + C.navy, borderTop: "2px solid " + C.gold, zIndex: 9999, boxShadow: "0 16px 48px rgba(0,0,0,0.9)", maxHeight: 400, overflowY: "auto" }}>
 
           {/* Header */}
           <div style={{ padding: "0.3rem 0.75rem", borderBottom: "1px solid " + C.navy, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -575,6 +594,36 @@ function BillSearchBox({ onSelect }) {
   );
 }
 
+// --- Outlet bias map (AllSides-style, hardcoded for credibility) ---
+const OUTLET_BIAS = {
+  reuters:"center", ap:"center", "associated press":"center", bloomberg:"center",
+  politico:"center", axios:"center", "the hill":"center", npr:"lean-left",
+  pbs:"lean-left", abc:"lean-left", cbs:"lean-left", nbc:"lean-left",
+  nyt:"lean-left", "new york times":"lean-left", "washington post":"lean-left",
+  cnn:"lean-left", msnbc:"left", guardian:"left", vox:"left", "the atlantic":"left",
+  "mother jones":"left", huffpost:"left", "fox news":"right", "the daily wire":"right",
+  breitbart:"right", "the federalist":"right", "national review":"lean-right",
+  "ny post":"lean-right", "new york post":"lean-right", "washington times":"lean-right",
+  "daily mail":"lean-right", "wall street journal":"lean-right", wsj:"lean-right",
+  "the economist":"center", forbes:"center", "usa today":"lean-left", newsweek:"center",
+};
+const BIAS_COLOR = {
+  left:"#3C5FA3", "lean-left":"#5b7fc4",
+  center:"#c8a14b", "lean-right":"#c96a6a", right:"#c1272d", unrated:"#8a8a96",
+};
+const BIAS_LABEL = {
+  left:"LEFT", "lean-left":"LEAN LEFT", center:"CENTER",
+  "lean-right":"LEAN RIGHT", right:"RIGHT", unrated:"UNRATED",
+};
+function biasOf(name) {
+  if (!name) return "unrated";
+  let s = String(name).toLowerCase().trim()
+    .replace(/^the\s+/, "").replace(/\.(com|org|net|co\.uk)$/, "")
+    .replace(/\s+(news|network|online|digital|media)$/, "").trim();
+  if (OUTLET_BIAS[s]) return OUTLET_BIAS[s];
+  for (const k in OUTLET_BIAS) if (s.includes(k) || k.includes(s)) return OUTLET_BIAS[k];
+  return "unrated";
+}
 const OUTLETS = [
   { name: "New York Times", url: "https://www.nytimes.com", lean: 18, tone: "supportive", coverage: 88, date: "Mar 14, 2025", headline: "Senate Bill Would Force Platforms to Limit Teen Access to Addictive Features", angle: "Frames as landmark consumer protection. Emphasis on Big Tech accountability.", billSection: "&#167; 3(a)(1) — Duty of Care", billText: "A covered platform shall act in the best interests of a minor user and shall not design, deploy, or maintain a platform feature that the platform knows, or reasonably should know, causes or is likely to cause physical or psychological harm to a minor user, including harm caused by any addictive or compulsive usage pattern.", keywords: ["best interests of a minor user", "physical or psychological harm", "addictive or compulsive usage pattern"] },
   { name: "Wall Street Journal", url: "https://www.wsj.com", lean: 76, tone: "skeptical", coverage: 71, date: "Mar 18, 2025", headline: "KOSA Would Let Government Decide What's 'Harmful' for Teens Online", angle: "Focuses on government overreach, regulatory burden, and enforcement ambiguity.", billSection: "&#167; 2(7) — Definition of Harm", billText: "The term 'harm to minors' includes physical, psychological, financial, or societal harm, as determined by the Commission in consultation with the Secretary of Health and Human Services, based on evidence including peer-reviewed research, clinical guidance, and expert testimony submitted to the record.", keywords: ["as determined by the Commission", "peer-reviewed research", "expert testimony"] },
@@ -603,10 +652,10 @@ const CONTENT_IDEAS = [
 ];
 
 const C = {
-  bg: "#0a0f1e", header: "#080c18", panel: "#101c3a",
-  panelHi: "#152247", navy: "#1b2d5c", border: "#1f3468",
-  red: "#B22234", gold: "#F0D060", blue: "#3C5FA3",
-  cream: "#F5EDD8", muted: "#7a8fa8", dim: "#2a3d6e", dimmer: "#1b2d5c",
+  bg: "#000000", header: "#0a0a0c", panel: "#16161a",
+  panelHi: "#1f1f24", navy: "#1b2d5c", border: "#2a2a30",
+  red: "#c1272d", gold: "#c8a14b", blue: "#3C5FA3",
+  cream: "#ece6da", muted: "#8a8a96", dim: "#5a5a64", dimmer: "#2a2a30",
 };
 
 const NAV = [
@@ -617,8 +666,8 @@ const NAV = [
   { id: "timeline",  num: "05", label: "Coverage Timeline", sub: "Volume & Tone",          color: "#7B5EA7" },
   { id: "pulse",     num: "06", label: "Reader Pulse",      sub: "Polling Data",           color: "#2E8B57" },
   { id: "lede",      num: "07", label: "Buried Lede",       sub: "What They Hid",          color: "#CC5500" },
-  { id: "officials", num: "08", label: "Officials DB",      sub: "Stances & Records",      color: "#0E7490" },
   { id: "cards",     num: "09", label: "Cards",            sub: "Media Card Generator",   color: "#7C3AED" },
+  { id: "compare",  num: "10", label: "Compare",         sub: "Side by Side",       color: "#c1272d" },
 ];
 
 const TONE_CFG = {
@@ -644,7 +693,7 @@ const SHADOW = {
 // ── Primitives ─────────────────────────────────────────────────
 function Bar({ pct, color, h }) {
   return (
-    <div style={{ height: h || 7, background: "#060e18", borderRadius: 2, overflow: "hidden" }}>
+    <div style={{ height: h || 7, background: "#16161a", borderRadius: 2, overflow: "hidden" }}>
       <div style={{ height: "100%", width: pct + "%", background: color, borderRadius: 2, transition: "width 1.1s ease" }} />
     </div>
   );
@@ -862,7 +911,7 @@ function OutletPill({ outlet, active, onClick }) {
       background: active ? accent : C.panel,
       color: active ? C.bg : C.dim,
       border: `1px solid ${active ? accent : C.border}`,
-      borderRadius: 8,
+      borderRadius: 14,
       fontFamily: "'Bebas Neue', Impact, sans-serif",
       fontSize: "0.88rem", letterSpacing: "0.1em",
       cursor: "pointer", transition: "all 0.2s",
@@ -943,7 +992,7 @@ function BillBrief({ bill, loading }) {
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-      <Card>
+      <Card style={{ borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
         <SL accent={C.gold}>Bill Summary</SL>
         <div style={{ fontFamily: "'Georgia', serif", fontSize: "0.87rem", color: C.muted, lineHeight: 1.78, marginBottom: "1rem" }}>{B.summary}</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
@@ -955,7 +1004,7 @@ function BillBrief({ bill, loading }) {
           ))}
         </div>
       </Card>
-      <Card>
+      <Card style={{ borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
         <SL accent={C.red}>Key Provisions</SL>
         {B.keyProvisions.map((p, i) => (
           <div key={i} style={{ display: "flex", gap: "0.6rem", marginBottom: "0.6rem" }}>
@@ -1096,7 +1145,7 @@ function BillLanguage({ bill }) {
         <div style={{ position: "fixed", inset: 0, background: C.bg, zIndex: 9999, display: "flex", flexDirection: "column", animation: "slideDown 0.2s ease" }}>
           {/* Header */}
           <div style={{ background: C.header, borderBottom: "1px solid " + C.border, padding: "0.75rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
-            <button onClick={() => setFullscreen(null)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.muted, background: C.panel, border: "1px solid " + C.border, borderRadius: 8, padding: "0.3rem 0.7rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+            <button onClick={() => setFullscreen(null)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.muted, background: C.panel, border: "1px solid " + C.border, borderRadius: 14, padding: "0.3rem 0.7rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" }}>
               &larr; Back
             </button>
             <div style={{ flex: 1 }}>
@@ -1110,7 +1159,7 @@ function BillLanguage({ bill }) {
 
           {/* Keyword search */}
           <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid " + C.border, background: C.header, flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: 8, height: 34, padding: "0 0.65rem", gap: "0.4rem" }}>
+            <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: 14, height: 34, padding: "0 0.65rem", gap: "0.4rem" }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — type any keyword or section number..."
                 style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
@@ -1152,13 +1201,13 @@ function BillLanguage({ bill }) {
 
       {/* Normal view */}
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-        <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + C.gold, padding: "0.5rem 0.85rem", borderRadius: 8, boxShadow: SHADOW.glow(C.gold) }}>
+        <div style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + C.gold, padding: "0.5rem 0.85rem", borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.82rem", color: C.cream, letterSpacing: "0.06em" }}>{B.name}</div>
           <MN color={C.muted} size="0.4rem">{B.id} · Tap outlets to expand · Tap card to read full text</MN>
         </div>
 
         {/* Keyword search bar */}
-        <div style={{ display: "flex", alignItems: "center", background: C.panel, border: "1px solid " + C.border, borderRadius: 8, height: 36, padding: "0 0.65rem", gap: "0.4rem", boxShadow: SHADOW.card }}>
+        <div style={{ display: "flex", alignItems: "center", background: C.panel, border: "1px solid " + C.border, borderRadius: 14, height: 36, padding: "0 0.65rem", gap: "0.4rem", boxShadow: SHADOW.card }}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — keyword or section..."
             style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
@@ -1199,7 +1248,7 @@ function CommentaryStudio({ bill }) {
   const [selIdea, setSelIdea] = useState(0);
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.7rem" }}>
-      <Card>
+      <Card style={{ borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
         <SL accent={C.gold}>Content Angles</SL>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.42rem" }}>
           {CONTENT_IDEAS.map((idea, i) => (
@@ -1215,7 +1264,7 @@ function CommentaryStudio({ bill }) {
         </div>
       </Card>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
-        <Card style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <Card style={{ flex: 1, display: "flex", flexDirection: "column", borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
           <SL accent={C.cream}>Script / Notes</SL>
           <textarea value={notes} onChange={e => setNotes(e.target.value)} style={{ flex: 1, minHeight: 110, width: "100%", background: C.bg, border: "1px solid " + C.navy, borderLeft: "3px solid " + C.cream + "33", color: C.muted, fontFamily: "'Georgia', serif", fontSize: "0.83rem", lineHeight: 1.75, padding: "0.7rem", outline: "none", resize: "none" }} />
         </Card>
@@ -1247,6 +1296,7 @@ function CommentaryStudio({ bill }) {
 
 function CoverageTimeline({ bill, archivalData }) {
   const B = bill || DEFAULT_BILL;
+  const [selSrc, setSelSrc] = useState(null);
 
   // Priority: archival GDELT timeline > bill actions > static demo
   const gdeltTimeline = archivalData?.timeline;
@@ -1302,6 +1352,23 @@ function CoverageTimeline({ bill, archivalData }) {
           );
         })}
       </div>
+        {(archivalData?.outlets?.length > 0) && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", marginTop: "0.3rem" }}>
+          <SL accent={C.gold}>Coverage By Source</SL>
+          <MN color={C.dim} size="0.4rem" spacing="0.14em">Tap an outlet — dot color shows AllSides lean</MN>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            {archivalData.outlets.map((o, i) => (
+              <OutletPill key={i} outlet={o} active={selSrc === i}
+                onClick={() => setSelSrc(selSrc === i ? null : i)} />
+            ))}
+          </div>
+          {selSrc != null && archivalData.outlets[selSrc] && (
+            <div style={{ marginTop: "0.3rem" }}>
+              <OutletExpandedCard outlet={archivalData.outlets[selSrc]} showText={false} />
+            </div>
+          )}
+        </div>
+        )}
     </div>
   );
 }
@@ -1393,7 +1460,7 @@ function ReaderPulse({ bill }) {
     <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
 
       {/* Fetch button / source header */}
-      <div style={{ background: C.panel, border: "1px solid " + C.border, padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+      <div style={{ background: C.panel, border: "1px solid " + C.border, padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.78rem", color: C.cream, letterSpacing: "0.08em" }}>
             {bill?.name || "Kids Online Safety Act"}
@@ -1870,7 +1937,7 @@ function OfficialsDB() {
   const [open, setOpen] = useState(false);
   const [showPreemptive, setShowPreemptive] = useState(true);
 
-  const TEAL = "#0E7490";
+  const TEAL = "#c8a14b";
   const MODES = [
     { id: "name", label: "Name" }, { id: "district", label: "State" },
     { id: "issue", label: "Issue" }, { id: "status", label: "Status" },
@@ -1925,14 +1992,14 @@ function OfficialsDB() {
           {MODES.map(m => {
             const isA = mode === m.id;
             return (
-              <button key={m.id} onClick={() => setMode(m.id)} style={{ padding: "0.28rem 0.7rem", background: isA ? TEAL : "transparent", color: isA ? C.cream : TEAL, border: "1px solid " + TEAL + (isA ? "" : "55"), borderRadius: 8, fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.15s", boxShadow: isA ? SHADOW.pill(TEAL) : "none" }}>{m.label}</button>
+              <button key={m.id} onClick={() => setMode(m.id)} style={{ padding: "0.28rem 0.7rem", background: isA ? TEAL : "transparent", color: isA ? C.cream : TEAL, border: "1px solid " + TEAL + (isA ? "" : "55"), borderRadius: 14, fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.72rem", letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.15s", boxShadow: isA ? SHADOW.pill(TEAL) : "none" }}>{m.label}</button>
             );
           })}
         </div>
 
         {/* Input row */}
         <div style={{ position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + (open ? TEAL + "88" : C.border), borderRadius: 8, height: 38, padding: "0 0.65rem", gap: "0.45rem", transition: "border-color 0.15s" }}>
+          <div style={{ display: "flex", alignItems: "center", background: "#1f1f24", border: "1px solid " + (open ? C.red + "88" : C.border), borderRadius: 999, height: 38, padding: "0 0.65rem", gap: "0.45rem", transition: "border-color 0.15s" }}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input value={query} onChange={e => { setQuery(e.target.value); setOpen(true); setShowPreemptive(e.target.value.length === 0); }}
               onFocus={() => setOpen(true)} onKeyDown={e => e.key === "Enter" && runSearch()}
@@ -1944,7 +2011,7 @@ function OfficialsDB() {
 
           {/* Dropdown */}
           {open && (
-            <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#070e1a", border: "1px solid " + C.border, borderTop: "2px solid " + TEAL, borderRadius: "0 0 10px 10px", zIndex: 9999, boxShadow: "0 16px 48px rgba(0,0,0,0.9)", maxHeight: 320, overflowY: "auto" }}>
+            <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0a0a0c", border: "1px solid " + C.border, borderTop: "2px solid " + TEAL, borderRadius: "0 0 10px 10px", zIndex: 9999, boxShadow: "0 16px 48px rgba(0,0,0,0.9)", maxHeight: 320, overflowY: "auto" }}>
               <div style={{ padding: "0.3rem 0.75rem", borderBottom: "1px solid " + C.border, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 {showPreemptive
                   ? <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
@@ -2019,7 +2086,7 @@ function OfficialsDB() {
                 </div>
               </div>
               {stances && (
-                <div style={{ display: "flex", border: "1px solid " + C.border, borderRadius: 8, overflow: "hidden" }}>
+                <div style={{ display: "flex", border: "1px solid " + C.border, borderRadius: 14, overflow: "hidden" }}>
                   {["summary", "detailed"].map(v => <button key={v} onClick={() => setView(v)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", letterSpacing: "0.1em", padding: "0.25rem 0.6rem", background: view === v ? TEAL : "transparent", color: view === v ? C.cream : C.dim, border: "none", cursor: "pointer", textTransform: "uppercase" }}>{v}</button>)}
                 </div>
               )}
@@ -2112,6 +2179,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tabsOpen, setTabsOpen] = useState(true);
+  const [cooldown, setCooldown] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+  const [pendingQuery, setPendingQuery] = useState(null);
 
   // ── Archival data sources ──────────────────────────────────
   const [activeSource, setActiveSource] = useState("demo");
@@ -2148,6 +2218,8 @@ export default function App() {
 
   // Re-fetch archival data when bill changes if a source is active
   useEffect(() => {
+    // Clear stale coverage from the previous bill so tabs never show old data
+    setArchivalData(null);
     if (activeSource !== "demo" && bill !== DEFAULT_BILL) {
       handleSourceSelect(activeSource);
     }
@@ -2163,7 +2235,7 @@ export default function App() {
   };
 
   const handleSearch = async (q) => {
-    const query = sanitizeQuery(q || "");
+    const query = (q && typeof q === "object") ? q : sanitizeQuery(q || "");
     if (!query) return;
     setLoading(true);
     setError(null);
@@ -2180,11 +2252,33 @@ export default function App() {
       setTab("brief");
       setMounted(true);
     } catch (e) {
-      setError(e.message);
+      if (e && e.retryAfter) {
+        const secs = Math.max(1, Math.ceil((e.retryAfter - Date.now()) / 1000));
+        setCooldown(secs);
+        setPendingQuery(query);
+        setError(null);
+      } else {
+        setError(e.message);
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  // Tick the rate-limit countdown; auto-fire the queued search at zero.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => {
+      const next = cooldown - 1;
+      setCooldown(next);
+      if (next <= 0 && pendingQuery != null) {
+        const q = pendingQuery;
+        setPendingQuery(null);
+        handleSearch(q);
+      }
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [cooldown, pendingQuery]);
 
   const QUICK = [
     { label: "KOSA", q: "S 4638" },
@@ -2205,7 +2299,7 @@ export default function App() {
     timeline:  wrap("timeline",  <CoverageTimeline bill={bill} archivalData={archivalData} />),
     pulse:     wrap("pulse",     <ReaderPulse bill={bill} />),
     lede:      wrap("lede",      <BuriedLede bill={bill} />),
-    officials: wrap("officials", <OfficialsDB />),
+    compare:   wrap("compare",  <CompareView />),
     cards:     wrap("cards",     <CardGenerator />),
   };
 
@@ -2215,24 +2309,24 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html,body,#root{height:100%;overflow:hidden}
-        body{background:#0a0f1e}
+        body{background:#000000}
         mark{background:none}
         textarea{resize:none;font-family:inherit}
         button{cursor:pointer;border:none;background:none}
         ::-webkit-scrollbar{width:4px;height:4px}
-        ::-webkit-scrollbar-track{background:#0a0f1e}
+        ::-webkit-scrollbar-track{background:#000000}
         ::-webkit-scrollbar-thumb{background:#1b2d5c}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
         @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
         @keyframes pulseGlow{0%,100%{box-shadow:0 0 6px rgba(255,255,255,0.8)}50%{box-shadow:0 0 12px rgba(255,255,255,1)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        input::placeholder{color:#2a3d6e}
+        input::placeholder{color:#5a5a64}
         input:focus{outline:none}
         .tab-row::-webkit-scrollbar{display:none}
         .tab-row{-ms-overflow-style:none;scrollbar-width:none}
       `}</style>
 
-      <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: C.bg }}>
+      <div style={{ display: "flex", flexDirection: "column", height: "100dvh", background: C.bg }}>
 
         {/* ── Masthead ── */}
         <div style={{ background: C.header, borderBottom: "1px solid " + C.navy, padding: "0 1.25rem", height: 54, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexShrink: 0 }}>
@@ -2244,7 +2338,21 @@ export default function App() {
           </div>
 
           {/* Live autocomplete search */}
-          <BillSearchBox onSelect={q => handleSearch(q)} />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: 1 }}>
+            <div style={{ flex: 1 }}><BillSearchBox onSelect={q => handleSearch(q)} /></div>
+            {cooldown > 0 && (
+              <div style={{
+                display: "flex", alignItems: "center", gap: "0.3rem", flexShrink: 0,
+                fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem",
+                color: "#c8a14b", background: "#c1272d18",
+                border: "1px solid #c1272d55", borderRadius: 6, padding: "0.25rem 0.5rem",
+                whiteSpace: "nowrap"
+              }} title="Rate limited — search will retry automatically">
+                <span style={{ color: "#c1272d" }}>⏱</span>
+                <span>{Math.floor(cooldown / 60)}:{String(cooldown % 60).padStart(2, "0")}</span>
+              </div>
+            )}
+          </div>
 
           {/* Quick picks */}
           <div style={{ display: "flex", gap: "0.3rem", flexShrink: 0 }}>
@@ -2278,14 +2386,14 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Bill ID strip ── */}
-        <div style={{ background: C.header, borderBottom: "1px solid " + C.navy, padding: "0.3rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
-          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.95rem", color: C.cream, letterSpacing: "0.06em" }}>{bill.name}</div>
-          <MN color={C.dim} size="0.38rem">{bill.id}</MN>
-          <MN color={C.dim} size="0.38rem">·</MN>
-          <MN color={C.muted} size="0.38rem">{bill.sponsor}</MN>
+        {/* — Bill ID strip (sticky under tabs, shrinks on scroll) — */}
+        <div style={{ background: C.header, borderBottom: "1px solid " + C.navy, padding: scrolled ? "0.2rem 1.25rem" : "0.3rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0, transition: "padding 0.2s ease" }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: scrolled ? "0.72rem" : "0.95rem", color: C.cream, letterSpacing: "0.06em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: scrolled ? "60%" : "none", transition: "font-size 0.2s ease" }}>{bill.name}</div>
+          {!scrolled && <MN color={C.dim} size="0.38rem">{bill.id}</MN>}
+          {!scrolled && <MN color={C.dim} size="0.38rem">·</MN>}
+          {!scrolled && <MN color={C.muted} size="0.38rem">{bill.sponsor}</MN>}
           <div style={{ marginLeft: "auto" }}>
-            <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.7rem", color: C.gold, border: "1px solid " + C.gold + "44", padding: "0.1rem 0.45rem", letterSpacing: "0.1em" }}>{bill.status}</span>
+            <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: scrolled ? "0.6rem" : "0.7rem", color: C.gold, border: "1px solid " + C.gold + "44", padding: scrolled ? "0.05rem 0.35rem" : "0.1rem 0.45rem", letterSpacing: "0.1em", whiteSpace: "nowrap", transition: "all 0.2s ease" }}>{bill.status}</span>
           </div>
         </div>
 
@@ -2299,7 +2407,7 @@ export default function App() {
                 background: isA ? n.color : C.panel,
                 color: isA ? C.cream : C.dim,
                 border: "1px solid " + (isA ? n.color : C.border),
-                borderRadius: 8,
+                borderRadius: 14,
                 fontFamily: "'Bebas Neue', Impact, sans-serif",
                 fontSize: "0.8rem", letterSpacing: "0.1em",
                 transition: "all 0.15s",
@@ -2312,7 +2420,7 @@ export default function App() {
           })}
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.4rem", opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-6px)", transition: "opacity 0.2s ease, transform 0.2s ease" }}>
+        <div onScroll={e => setScrolled(e.target.scrollTop > 8)} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "1rem 1.4rem", opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-6px)", transition: "opacity 0.2s ease, transform 0.2s ease" }}>
           {loading
             ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60%", gap: "0.75rem" }}>
                 <div style={{ width: 32, height: 32, border: "3px solid " + C.navy, borderTop: "3px solid " + C.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />

@@ -10,14 +10,11 @@ export default defineConfig(({ mode }) => {
         '/api/congress': {
           target: 'https://api.congress.gov/v3',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/congress/, ''),
-          configure: (proxy) => {
-            proxy.on('proxyReq', (proxyReq, req) => {
-              const u = new URL('http://x' + req.url)
-              u.searchParams.delete('api_key')
-              u.searchParams.set('api_key', env.CONGRESS_API_KEY || '')
-              proxyReq.path = u.pathname + u.search
-            })
+          rewrite: (path) => {
+            const u = new URL('http://x' + path.replace(/^\/api\/congress/, ''))
+            u.searchParams.delete('api_key')
+            u.searchParams.set('api_key', env.CONGRESS_API_KEY || '')
+            return u.pathname + u.search
           }
         }
       }

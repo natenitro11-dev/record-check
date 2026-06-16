@@ -7,7 +7,7 @@ exports.handler = async function (event, context) {
     return { statusCode: 400, body: "Missing targetUrl query parameter." };
   }
 
-  const allowedDomains = ["gdeltproject.org", "archive.org", "commoncrawl.org"];
+  const allowedDomains = ["gdeltproject.org", "archive.org", "commoncrawl.org", "govinfo.gov", "congress.gov"];
   const isDomainAllowed = allowedDomains.some(domain => targetUrl.includes(domain));
 
   if (!isDomainAllowed) {
