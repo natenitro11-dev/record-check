@@ -2329,7 +2329,7 @@ export default function App() {
       <div style={{ display: "flex", flexDirection: "column", height: "100dvh", background: C.bg }}>
 
         {/* ── Masthead ── */}
-        <div style={{ background: C.header, borderBottom: "1px solid " + C.navy, padding: "0 1.25rem", height: 54, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexShrink: 0 }}>
+        <div style={{ background: C.header, borderBottom: "1px solid " + C.navy, padding: "0 max(1.25rem, calc((100% - 1280px) / 2))", height: 54, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexShrink: 0 }}>
 
           {/* Brand */}
           <div style={{ flexShrink: 0 }}>
@@ -2420,7 +2420,7 @@ export default function App() {
           })}
         </div>
 
-        <div onScroll={e => setScrolled(e.target.scrollTop > 8)} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "1rem 1.4rem", opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-6px)", transition: "opacity 0.2s ease, transform 0.2s ease" }}>
+        <div onScroll={e => setScrolled(e.target.scrollTop > 8)} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "1rem max(1.4rem, calc((100% - 1280px) / 2))", opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-6px)", transition: "opacity 0.2s ease, transform 0.2s ease" }}>
           {loading
             ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60%", gap: "0.75rem" }}>
                 <div style={{ width: 32, height: 32, border: "3px solid " + C.navy, borderTop: "3px solid " + C.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
