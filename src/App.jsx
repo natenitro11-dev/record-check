@@ -1246,49 +1246,81 @@ function CommentaryStudio({ bill }) {
   const B = bill || DEFAULT_BILL;
   const [notes, setNotes] = useState("Your script goes here. Draft your opening hook, the gap reveal, and your close.");
   const [selIdea, setSelIdea] = useState(0);
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.7rem" }}>
-      <Card style={{ borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
-        <SL accent={C.gold}>Content Angles</SL>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.42rem" }}>
-          {CONTENT_IDEAS.map((idea, i) => (
-            <div key={i} onClick={() => setSelIdea(i)} style={{ background: selIdea === i ? C.bg : "transparent", border: "1px solid " + (selIdea === i ? C.gold + "44" : C.border), borderLeft: "3px solid " + (selIdea === i ? C.gold : C.border), padding: "0.65rem 0.8rem", cursor: "pointer", transition: "all 0.15s" }}>
-              <div style={{ display: "flex", gap: "0.42rem", alignItems: "center", marginBottom: "0.22rem" }}>
-                <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", color: C.red, border: "1px solid " + C.red + "44", padding: "0.04rem 0.3rem" }}>{idea.type}</span>
-                <MN color={C.dim} size="0.4rem">{idea.platform}</MN>
-              </div>
-              <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.88rem", color: selIdea === i ? C.cream : C.dim, lineHeight: 1.2, marginBottom: selIdea === i ? "0.3rem" : 0 }}>{idea.hook}</div>
-              {selIdea === i && <div style={{ fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.74rem", color: C.muted, lineHeight: 1.5 }}>{idea.angle}</div>}
+  const [cols, setCols] = useState(2);
+  const [zoom, setZoom] = useState(1);
+  const [collapsed, setCollapsed] = useState({});
+  const toggle = k => setCollapsed(p => ({ ...p, [k]: !p[k] }));
+  const Head = ({ id, title, accent }) => (
+    <div onClick={() => toggle(id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", marginBottom: collapsed[id] ? 0 : "0.6rem" }}>
+      <SL accent={accent}>{title}</SL>
+      <span style={{ color: accent, fontSize: "0.7rem" }}>{collapsed[id] ? "&#9660;" : "&#9650;"}</span>
+    </div>
+  );
+  const sections = [
+    (<div style={{ borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.card, background: C.panel, border: "1px solid " + C.border, padding: "1rem" }}>
+      <Head id="angles" title="Content Angles" accent={C.gold} />
+      {!collapsed.angles && <div style={{ display: "flex", flexDirection: "column", gap: "0.42rem" }}>
+        {CONTENT_IDEAS.map((idea, i) => (
+          <div key={i} onClick={() => setSelIdea(i)} style={{ background: selIdea === i ? C.bg : "transparent", border: "1px solid " + (selIdea === i ? C.gold + "44" : C.border), borderLeft: "3px solid " + (selIdea === i ? C.gold : C.border), padding: "0.65rem 0.8rem", cursor: "pointer", borderRadius: 10 }}>
+            <div style={{ display: "flex", gap: "0.42rem", alignItems: "center", marginBottom: "0.22rem" }}>
+              <span style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", color: C.red, border: "1px solid " + C.red + "44", padding: "0.04rem 0.3rem", borderRadius: 5 }}>{idea.type}</span>
+              <MN color={C.dim} size="0.4rem">{idea.platform}</MN>
             </div>
+            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.88rem", color: selIdea === i ? C.cream : C.dim, lineHeight: 1.2 }}>{idea.hook}</div>
+            {selIdea === i && <div style={{ fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.74rem", color: C.muted, lineHeight: 1.5, marginTop: "0.3rem" }}>{idea.angle}</div>}
+          </div>
+        ))}
+      </div>}
+    </div>),
+    (<div style={{ borderLeft: "4px solid " + C.cream, borderRadius: 14, boxShadow: SHADOW.card, background: C.panel, border: "1px solid " + C.border, padding: "1rem", display: "flex", flexDirection: "column" }}>
+      <Head id="script" title="Script / Notes" accent={C.cream} />
+      {!collapsed.script && <textarea value={notes} onChange={ev => setNotes(ev.target.value)} style={{ flex: 1, minHeight: 130, width: "100%", background: C.bg, border: "1px solid " + C.navy, color: C.muted, fontFamily: "'Georgia', serif", fontSize: "0.83rem", lineHeight: 1.75, padding: "0.7rem", outline: "none", resize: "none", borderRadius: 10, boxSizing: "border-box" }} />}
+    </div>),
+    (<div style={{ borderLeft: "4px solid " + C.red, borderRadius: 14, boxShadow: SHADOW.card, background: C.panel, border: "1px solid " + C.border, padding: "1rem" }}>
+      <Head id="spin" title="Spin Card Preview" accent={C.red} />
+      {!collapsed.spin && <>
+        <MN color={C.dim} size="0.4rem" spacing="0.12em">{BRAND.name}</MN>
+        <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, margin: "0.22rem 0 0.5rem" }}>{B.name}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.42rem", marginBottom: "0.5rem" }}>
+          <div style={{ background: C.bg, padding: "0.45rem 0.55rem", borderTop: "2px solid " + C.blue, borderRadius: 8 }}><MN color={C.blue} size="0.38rem" spacing="0.1em">BILL SAYS</MN><div style={{ fontFamily: "'Georgia', serif", fontSize: "0.68rem", color: C.muted, lineHeight: 1.5, marginTop: 2 }}>Platforms must act in the best interests of minor users.</div></div>
+          <div style={{ background: C.bg, padding: "0.45rem 0.55rem", borderTop: "2px solid " + C.red, borderRadius: 8 }}><MN color={C.red} size="0.38rem" spacing="0.1em">PRESS SAID</MN><div style={{ fontFamily: "'Georgia', serif", fontSize: "0.68rem", color: C.muted, lineHeight: 1.5, marginTop: 2 }}>Government would police teen internet use.</div></div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><MN color={C.dim} size="0.38rem">Divergence Score</MN><BN color={C.red} size="1.4rem">72 / 100</BN></div>
+      </>}
+    </div>),
+    (<div style={{ borderLeft: "4px solid " + C.blue, borderRadius: 14, boxShadow: SHADOW.card, background: C.panel, border: "1px solid " + C.border, padding: "1rem" }}>
+      <Head id="talking" title="Talking Points" accent={C.blue} />
+      {!collapsed.talking && <div style={{ display: "flex", flexDirection: "column", gap: "0.38rem" }}>
+        {[["Opening Hook", C.gold, "The media called KOSA a censorship bill. I read all 47 pages. Here is what they got wrong."], ["The Gap", C.red, "91 senators voted yes. Coverage dropped 52% after passage. Why did the story disappear?"], ["The Close", C.blue, "67% of Americans support this. Your rep voted no. Here is who funded their campaign."]].map(([label, color, text]) => (
+          <div key={label} style={{ background: C.bg, borderTop: "2px solid " + color, padding: "0.45rem 0.6rem", borderRadius: 8 }}>
+            <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", color: color, letterSpacing: "0.15em", marginBottom: "0.18rem" }}>{label}</div>
+            <div style={{ fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.75rem", color: C.muted, lineHeight: 1.5 }}>"{text}"</div>
+          </div>
+        ))}
+      </div>}
+    </div>),
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", flexWrap: "wrap", background: C.panel, border: "1px solid " + C.border, borderRadius: 14, boxShadow: SHADOW.card, padding: "0.55rem 0.8rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <MN color={C.dim} size="0.42rem" spacing="0.12em">COLS</MN>
+          {[1, 2, 3].map(n => (
+            <button key={n} onClick={() => setCols(n)} style={{ width: 30, height: 26, borderRadius: 8, background: cols === n ? C.red : C.bg, color: cols === n ? C.cream : C.dim, border: "1px solid " + (cols === n ? C.red : C.border), fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", cursor: "pointer", boxShadow: cols === n ? SHADOW.pill(C.red) : "none" }}>{n}</button>
           ))}
         </div>
-      </Card>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
-        <Card style={{ flex: 1, display: "flex", flexDirection: "column", borderLeft: "4px solid " + C.gold, borderRadius: 14, boxShadow: SHADOW.glow(C.gold) }}>
-          <SL accent={C.cream}>Script / Notes</SL>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} style={{ flex: 1, minHeight: 110, width: "100%", background: C.bg, border: "1px solid " + C.navy, borderLeft: "3px solid " + C.cream + "33", color: C.muted, fontFamily: "'Georgia', serif", fontSize: "0.83rem", lineHeight: 1.75, padding: "0.7rem", outline: "none", resize: "none" }} />
-        </Card>
-        <div style={{ background: C.bg, border: "1px solid " + C.red + "33", padding: "0.85rem" }}>
-          <SL accent={C.red}>Spin Card Preview</SL>
-          <MN color={C.dim} size="0.4rem" spacing="0.12em">{BRAND.name} · {BRAND.handle}</MN>
-          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "1.05rem", color: C.cream, margin: "0.22rem 0 0.5rem" }}>{B.name}</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.42rem", marginBottom: "0.5rem" }}>
-            <div style={{ background: C.panel, padding: "0.45rem 0.55rem", borderTop: "2px solid " + C.blue }}><MN color={C.blue} size="0.38rem" spacing="0.1em">BILL SAYS</MN><div style={{ fontFamily: "'Georgia', serif", fontSize: "0.68rem", color: C.muted, lineHeight: 1.5, marginTop: 2 }}>Platforms must act in the best interests of minor users.</div></div>
-            <div style={{ background: C.panel, padding: "0.45rem 0.55rem", borderTop: "2px solid " + C.red }}><MN color={C.red} size="0.38rem" spacing="0.1em">PRESS SAID</MN><div style={{ fontFamily: "'Georgia', serif", fontSize: "0.68rem", color: C.muted, lineHeight: 1.5, marginTop: 2 }}>Government would police teen internet use.</div></div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><MN color={C.dim} size="0.38rem">Divergence Score</MN><BN color={C.red} size="1.4rem">72 / 100</BN></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flex: 1, minWidth: 120 }}>
+          <MN color={C.dim} size="0.42rem" spacing="0.12em">ZOOM</MN>
+          <input type="range" min="0.6" max="1.6" step="0.1" value={zoom} onChange={ev => setZoom(parseFloat(ev.target.value))} style={{ flex: 1, accentColor: C.gold }} />
+          <MN color={C.gold} size="0.42rem">{Math.round(zoom * 100)}%</MN>
         </div>
-        <Card>
-          <SL accent={C.blue}>Talking Points</SL>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.38rem" }}>
-            {[["Opening Hook", C.gold, "The media called KOSA a censorship bill. I read all 47 pages. Here's what they got wrong."], ["The Gap", C.red, "91 senators voted yes. Coverage dropped 52% after passage. Why did the story disappear?"], ["The Close", C.blue, "67% of Americans support this. Your rep voted no. Here's who funded their campaign."]].map(([label, color, text]) => (
-              <div key={label} style={{ background: C.bg, borderTop: "2px solid " + color, padding: "0.45rem 0.6rem" }}>
-                <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.68rem", color: color, letterSpacing: "0.15em", marginBottom: "0.18rem" }}>{label}</div>
-                <div style={{ fontFamily: "'Georgia', serif", fontStyle: "italic", fontSize: "0.75rem", color: C.muted, lineHeight: 1.5 }}>"{text}"</div>
-              </div>
-            ))}
+      </div>
+      <div style={{ overflow: "auto", WebkitOverflowScrolling: "touch", maxHeight: "72vh" }}>
+        <div style={{ transform: "scale(" + zoom + ")", transformOrigin: "top left", width: (100 / zoom) + "%" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(" + cols + ", minmax(0, 1fr))", gap: "0.7rem", alignItems: "start" }}>
+            {sections.map((sec, i) => <div key={i}>{sec}</div>)}
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
