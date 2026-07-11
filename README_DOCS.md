@@ -26,3 +26,6 @@ Then read the docs below that are relevant, and tell Claude:
 
 ## RULE
 When you add or rename a doc, update THIS file's table + status, then commit. The index must always reflect reality.
+
+## ADDED June 13
+- GEMINI_BLUEPRINT.md — Gemini planning output (Gap Score formula, bias methodology) WITH Claude caveats. Read caveats before building. Bias methodology ready; Gap Score needs simplifying for v1.
