@@ -1145,7 +1145,7 @@ function BillLanguage({ bill }) {
         <div style={{ position: "fixed", inset: 0, background: C.bg, zIndex: 9999, display: "flex", flexDirection: "column", animation: "slideDown 0.2s ease" }}>
           {/* Header */}
           <div style={{ background: C.header, borderBottom: "1px solid " + C.border, padding: "0.75rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
-            <button onClick={() => setFullscreen(null)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.muted, background: C.panel, border: "1px solid " + C.border, borderRadius: 14, padding: "0.3rem 0.7rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+            <button onClick={() => setFullscreen(null)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.8rem", color: C.muted, background: C.panel, border: "1px solid " + C.border, borderRadius: 14, padding: "0.3rem 0.7rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem" , boxShadow: SHADOW.card }}>
               &larr; Back
             </button>
             <div style={{ flex: 1 }}>
@@ -1159,7 +1159,7 @@ function BillLanguage({ bill }) {
 
           {/* Keyword search */}
           <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid " + C.border, background: C.header, flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: 14, height: 34, padding: "0 0.65rem", gap: "0.4rem" }}>
+            <div style={{ display: "flex", alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: 14, height: 34, padding: "0 0.65rem", gap: "0.4rem" , boxShadow: SHADOW.card }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.dim} strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="Search bill text — type any keyword or section number..."
                 style={{ flex: 1, background: "none", border: "none", color: C.cream, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", outline: "none" }} />
@@ -2086,7 +2086,7 @@ function OfficialsDB() {
                 </div>
               </div>
               {stances && (
-                <div style={{ display: "flex", border: "1px solid " + C.border, borderRadius: 14, overflow: "hidden" }}>
+                <div style={{ display: "flex", border: "1px solid " + C.border, borderRadius: 14, overflow: "hidden" , boxShadow: SHADOW.card }}>
                   {["summary", "detailed"].map(v => <button key={v} onClick={() => setView(v)} style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.65rem", letterSpacing: "0.1em", padding: "0.25rem 0.6rem", background: view === v ? TEAL : "transparent", color: view === v ? C.cream : C.dim, border: "none", cursor: "pointer", textTransform: "uppercase" }}>{v}</button>)}
                 </div>
               )}
