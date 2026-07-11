@@ -1295,6 +1295,16 @@ function CommentaryStudio({ bill }) {
 }
 
 function CoverageTimeline({ bill, archivalData }) {
+  const [openEvent, setOpenEvent] = useState(null);
+  const eventArticles = {
+    "Bill Introduced":   [{ outlet: "Reuters", lean: "center", headline: "Senators unveil online safety bill for minors", url: "https://reuters.com" }, { outlet: "The Hill", lean: "center", headline: "KOSA introduced with bipartisan backing", url: "https://thehill.com" }],
+    "Committee Hearing": [{ outlet: "NYT", lean: "lean-left", headline: "Tech executives grilled at KOSA hearing", url: "https://nytimes.com" }, { outlet: "Fox News", lean: "right", headline: "Lawmakers spar over online speech rules", url: "https://foxnews.com" }],
+    "Tech Lobby Push":   [{ outlet: "Politico", lean: "center", headline: "Tech lobby spends millions opposing KOSA", url: "https://politico.com" }, { outlet: "Vox", lean: "left", headline: "Inside the fight to weaken kids safety bill", url: "https://vox.com" }],
+    "Senate Vote 91-3":  [{ outlet: "AP", lean: "center", headline: "Senate passes KOSA in landslide vote", url: "https://apnews.com" }, { outlet: "NPR", lean: "lean-left", headline: "KOSA clears Senate, heads to House", url: "https://npr.org" }],
+    "House Stall":       [{ outlet: "The Hill", lean: "center", headline: "KOSA stalls in House committee", url: "https://thehill.com" }, { outlet: "Fox News", lean: "right", headline: "House GOP blocks online safety bill", url: "https://foxnews.com" }],
+    "Reintroduced":      [{ outlet: "Reuters", lean: "center", headline: "KOSA reintroduced in new session", url: "https://reuters.com" }],
+  };
+  const leanColor = l => l.includes("left") ? C.blue : l.includes("right") ? C.red : l === "center" ? C.gold : C.dim;
   const B = bill || DEFAULT_BILL;
   const [selSrc, setSelSrc] = useState(null);
 
@@ -1344,10 +1354,28 @@ function CoverageTimeline({ bill, archivalData }) {
         {TIMELINE.map((t, i) => {
           const c = toneColor(t.tone);
           return (
-            <div key={i} style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + c, padding: "0.65rem 0.9rem", display: "grid", gridTemplateColumns: "85px 1fr 65px", alignItems: "center", gap: "0.9rem" }}>
+            <div key={i}>
+            <div onClick={() => setOpenEvent(openEvent === i ? null : i)} style={{ background: C.panel, border: "1px solid " + C.border, borderLeft: "4px solid " + c, borderRadius: 14, boxShadow: SHADOW.card, padding: "0.65rem 0.9rem", display: "grid", gridTemplateColumns: "85px 1fr 65px", alignItems: "center", gap: "0.9rem", cursor: "pointer", marginBottom: openEvent === i ? "0.4rem" : "0" }}>
               <MN color={C.dim} size="0.48rem" spacing="0.06em">{t.month}</MN>
-              <div><div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.92rem", color: C.cream, letterSpacing: "0.08em" }}>{t.event}</div><MN color={C.dim} size="0.38rem">Tone: <span style={{ color: c }}>{TONE_CFG[t.tone] ? TONE_CFG[t.tone].label : t.tone}</span></MN></div>
+              <div><div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: "0.92rem", color: C.cream, letterSpacing: "0.08em" }}>{t.event}</div><MN color={C.dim} size="0.38rem">Tone: <span style={{ color: c }}>{TONE_CFG[t.tone] ? TONE_CFG[t.tone].label : t.tone}</span> &middot; {(eventArticles[t.event] || []).length} articles {openEvent === i ? "▲" : "▼"}</MN></div>
               <div style={{ textAlign: "right" }}><BN color={c} size="1.4rem">{t.coverage}%</BN><MN color={C.dim} size="0.38rem">volume</MN></div>
+            </div>
+            {openEvent === i && (eventArticles[t.event] || []).length > 0 && (
+              <div style={{ marginLeft: "0.5rem", marginBottom: "0.42rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                {(eventArticles[t.event] || []).map((a, j) => (
+                  <a key={j} href={a.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                    <div style={{ background: C.header, border: "1px solid " + C.border, borderLeft: "3px solid " + leanColor(a.lean), borderRadius: 12, boxShadow: SHADOW.card, padding: "0.6rem 0.8rem", display: "flex", alignItems: "center", gap: "0.7rem" }}>
+                      <div style={{ minWidth: 8, width: 8, height: 8, borderRadius: "50%", background: leanColor(a.lean) }} />
+                      <div style={{ flex: 1 }}>
+                        <MN color={leanColor(a.lean)} size="0.42rem" spacing="0.08em">{a.outlet} &middot; {a.lean}</MN>
+                        <div style={{ fontFamily: "'Georgia', serif", fontSize: "0.82rem", color: C.cream, lineHeight: 1.35, marginTop: 2 }}>{a.headline}</div>
+                      </div>
+                      <span style={{ color: C.dim, fontSize: "0.7rem" }}>&#8599;</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
             </div>
           );
         })}
